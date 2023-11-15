@@ -7,8 +7,9 @@ class ListingsList(generics.ListCreateAPIView):
     queryset = Listing.active_listings.all()
     serializer_class = ListingSerializer
 
-class ListingShow(generics.RetrieveAPIView):
-    pass
+class ListingShow(generics.RetrieveDestroyAPIView):
+    queryset = Listing.all_listings.all()
+    serializer_class = ListingSerializer
 
 class LocationsList(generics.ListCreateAPIView):
     queryset = ListingLocation.locations.all()

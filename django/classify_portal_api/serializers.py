@@ -10,4 +10,4 @@ class ListingSerializer(serializers.ModelSerializer):
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ListingLocation
-        fields = ['street', 'number', 'apt_number', 'city', 'state', 'country']
+        fields = ['district', 'city', 'state', 'country']

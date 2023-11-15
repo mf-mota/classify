@@ -23,7 +23,7 @@ class ListingLocation(models.Model):
             return "{}, {}, {}, {}".format(
                 self.district, self.city, self.state, self.country
             )
-        return "{} {}, {}".format(
+        return "{}, {}, {}".format(
             self.city, self.state, self.country
         )
     
