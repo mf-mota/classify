@@ -36,11 +36,15 @@ class ListingLocation(models.Model):
 class Listing(models.Model):
     class ActiveListings(models.Manager):
         def get_queryset(self) -> QuerySet:
+            print(super().get_queryset())
             return super().get_queryset() .filter(is_active='active')
         
     class DraftListings(models.Manager):
         def get_queryset(self) -> QuerySet:
             return super().get_queryset() .filter(is_active='draft')
+        
+    def images(self):
+        return ListingImage.objects.filter(listing=self)
         
     name = models.CharField(max_length=50)
     category = models.ForeignKey(ListingCategory, on_delete=models.PROTECT)
@@ -59,6 +63,7 @@ class Listing(models.Model):
     all_listings = models.Manager()
     active_listings = ActiveListings()
     draft_listings = DraftListings()
+    
 
     class Meta:
         ordering = ['-creation']
@@ -67,6 +72,11 @@ class Listing(models.Model):
     
 
 class ListingImage(models.Model):
+    class MainImage(models.Manager):
+        def get_queryset(self) -> QuerySet:
+            return super().get_queryset() .filter(is_main=True)
     is_main = models.BooleanField(default=False)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
     url = models.CharField(max_length=200, default="SETDEFAULTIMGURL.COM")
+    objects = models.Manager()
+    main_image = MainImage()

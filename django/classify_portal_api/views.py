@@ -1,6 +1,7 @@
 from rest_framework import generics
-from listings.models import Listing, ListingLocation
-from classify_portal_api.serializers import ListingSerializer, LocationSerializer
+from listings.models import Listing, ListingLocation, ListingImage
+from rest_framework.response import Response
+from classify_portal_api.serializers import ListingSerializer, LocationSerializer, ImageSerializer
 
 # using the custom manager to return active listings only
 class ListingsList(generics.ListCreateAPIView):

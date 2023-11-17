@@ -48,18 +48,19 @@ class ListingEndpointTest(BaseAPITestCase):
         response = self.client.get(url, format='json')
         print(response.content.decode())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-            
+        self.ass
 
     def test_get_single_listing(self):
         url = reverse('classify_portal_api:show_listing', args=[1])
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
+        self.asser
 class LocationEndpointTest(BaseAPITestCase):
     def test_get_locations(self):
         url = reverse("classify_portal_api:locations_list")
         res = self.client.get(url, format='json')
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertHTMLEqual()
 
 
 class CategoryEndpointTest(BaseAPITestCase):
