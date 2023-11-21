@@ -12,7 +12,10 @@ class ListingsList(generics.ListCreateAPIView):
 class ListingShow(generics.RetrieveDestroyAPIView):
     queryset = Listing.all_listings.all()
     serializer_class = ListingSerializerDetails
-    Listing.inc_view_count()
+    def get(self, request, *args, **kwargs):
+        listing = self.get_object()
+        listing.inc_view_count()
+        return super().get(request, *args, **kwargs)
 
 class LocationsList(generics.ListCreateAPIView):
     queryset = ListingLocation.locations.all()

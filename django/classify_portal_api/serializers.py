@@ -42,6 +42,5 @@ class ListingSerializerDetails(serializers.ModelSerializer):
 
 class UserListingOverview(ListingSerializerMainPage):
     class Meta:
-        class Meta:
-            model = Listing
-            fields = ['id', 'name', 'description', 'category', 'price', 'location', 'owner', 'is_active', 'view_count', 'images']
+        model = Listing
+        fields = ['id', 'name', 'description', 'category', 'price', 'location', 'owner', 'is_active', 'view_count', 'images']

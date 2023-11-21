@@ -32,7 +32,7 @@ export default function UserDashboard () {
                         <Box key={l.id} sx={{backgroundColor: '#00000044', p: 3, borderRadius: '1rem'}}>
                             <Typography color="primary" sx={{fontWeight: 'bold'}}>Status: {l.is_active == "active" ? "Active" : "Draft"}</Typography>
                             <ListingCard key={l.id} details={l} sx={{ maxWidth: 345 }}/>
-                            <Typography color="primary" sx={{fontWeight: 'bold'}}>Clicks: {l.is_active == "active" ? "Active" : "Draft"}</Typography>
+                            <Typography color="primary" sx={{fontWeight: 'bold'}}>Clicks: {l.view_count}</Typography>
 
                         </Box>
                         )

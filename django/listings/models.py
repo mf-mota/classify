@@ -45,7 +45,12 @@ class Listing(models.Model):
         
     def images(self):
         return ListingImage.objects.filter(listing=self)
-        
+    
+    def inc_view_count(self):
+        self.view_count +=1
+        self.save()
+        return True
+
     name = models.CharField(max_length=50)
     category = models.ForeignKey(ListingCategory, on_delete=models.PROTECT)
     description = models.TextField()
@@ -65,9 +70,7 @@ class Listing(models.Model):
     active_listings = ActiveListings()
     draft_listings = DraftListings()
     
-    def inc_view_count(self):
-        self.view_count +=1
-        self.save()
+
 
     class Meta:
         ordering = ['-creation']
