@@ -60,10 +60,14 @@ class Listing(models.Model):
     owner = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="listings"
     )
+    view_count = models.PositiveIntegerField(default=0)
     all_listings = models.Manager()
     active_listings = ActiveListings()
     draft_listings = DraftListings()
     
+    def inc_view_count(self):
+        self.view_count +=1
+        self.save()
 
     class Meta:
         ordering = ['-creation']

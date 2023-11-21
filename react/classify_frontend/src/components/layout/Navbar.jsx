@@ -11,6 +11,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const pages = ['New Classified Ad'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -42,25 +43,26 @@ export default function Navbar() {
     }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
+          <Link to="/" sx={{}}>
           <Typography
             variant="h4"
             noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
+            component="h1"
             sx={{
               mr: 3,
               display: { xs: 'none', md: 'flex' },
               fontFamily: 'roboto',
               fontWeight: 700,
               letterSpacing: '.2rem',
-              color: 'inherit',
+              color: 'white',
               '&:hover': {
                 color: 'white'
               }
             }}
           >
-            CLASSIFY
+            CLASSIFY 
           </Typography>
+          </Link>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -101,7 +103,7 @@ export default function Navbar() {
           <Typography
             variant="h4"
             noWrap
-            component="a"
+            component="h1"
             href="#app-bar-with-responsive-menu"
             sx={{
               mr: 2,
@@ -112,9 +114,15 @@ export default function Navbar() {
               letterSpacing: '.2rem',
               color: 'inherit',
               textDecoration: 'none',
+              '&:hover': {
+                color: 'white'
+              }
             }}
           >
-            CLASSIFY
+            <Link to="/" style={{color: 'white', '&:hover': {
+              color: 'white', textDecoration: 'none'
+            }}}><span>CLASSIFY</span></Link>
+
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'end', mr:6}}>
             {pages.map((page) => (

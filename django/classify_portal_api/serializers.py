@@ -1,6 +1,10 @@
 from rest_framework import serializers
-from listings.models import Listing, ListingLocation, ListingImage
+from listings.models import Listing, ListingLocation, ListingImage, User
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'username']
 
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,8 +16,9 @@ class ImageSerializer(serializers.ModelSerializer):
         model = ListingImage
         fields = ['is_main', 'listing', 'url']
 
-class ListingSerializer(serializers.ModelSerializer):
+class ListingSerializerMainPage(serializers.ModelSerializer):
     images = ImageSerializer(many=True, read_only=True)
+    location = LocationSerializer()
     class Meta:
         model = Listing
         fields = ['id', 'name', 'description', 'category', 'price', 'location', 'owner', 'is_active', 'images']
@@ -24,3 +29,19 @@ class ListingSerializer(serializers.ModelSerializer):
         instance_data = super().to_representation(instance)
         instance_data['images'] = images_serializer.data
         return instance_data
+    
+
+class ListingSerializerDetails(serializers.ModelSerializer):
+    images = ImageSerializer(many=True, read_only=True)
+    location = LocationSerializer()
+    owner = UserSerializer()
+
+    class Meta:
+        model = Listing
+        fields = ['id', 'name', 'description', 'category', 'price', 'location', 'owner', 'is_active', 'images']
+
+class UserListingOverview(ListingSerializerMainPage):
+    class Meta:
+        class Meta:
+            model = Listing
+            fields = ['id', 'name', 'description', 'category', 'price', 'location', 'owner', 'is_active', 'view_count', 'images']

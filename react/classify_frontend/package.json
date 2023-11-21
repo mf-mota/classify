@@ -14,10 +14,12 @@
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.8",
     "@mui/icons-material": "^5.14.18",
+    "@mui/joy": "^5.0.0-beta.15",
     "@mui/material": "^5.14.18",
     "axios": "^1.6.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-material-ui-carousel": "^3.4.2",
     "react-router-dom": "^6.19.0"
   },
   "devDependencies": {

@@ -12,10 +12,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-#root {
-  height: 100vh;
-}
-
 a {
   font-weight: 500;
   color: #646cff;
@@ -27,9 +23,14 @@ a:hover {
 
 body {
   margin: 0;
-  background: linear-gradient(to right, #83bbb6, #799aa5, #799aa5, #83bbb6);  display: flex;
+  background: linear-gradient(to right, #EDF2F4, #EEF4ED, #EDF2F4);  
+  display: flex;
   place-items: center;
   min-width: 320px;
+  min-height: 100vh;
+}
+#root {
+  background: linear-gradient(to right, #EDF2F4, #EEF4ED, #EDF2F4);  
   min-height: 100vh;
 }
 

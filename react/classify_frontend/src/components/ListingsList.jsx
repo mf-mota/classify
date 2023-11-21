@@ -2,25 +2,26 @@ import api from '../api/listings'
 import { useState, useEffect } from 'react'
 import ListingCard from './ListingCard'
 import Box from '@mui/system/Box';
+import '../ListingCard.css'
 
 
 export default function ListingsList() {
     const [listings, setListings] = useState([])
     useEffect(() => {
-        const getPosts = async () => {
+        const getListings = async () => {
             try {
                 const res = await api.get('/listings');
                 if (res && res.data) setListings(res.data);
                 console.log(res.data)
             } catch (e) {
-                console.log(e);
+                console.log("An error occurred while retrieving the data", e);
             }
         }
-        getPosts()
+        getListings()
     }, [])
     return (
         <Box component="main" display="flex"
-        sx={{justifyContent: "space-around"}}>
+        sx={{justifyContent: "space-around", flexWrap: "wrap"}}>
             {listings.map(l => {
                 return <ListingCard key={l.id} details={l} sx={{ maxWidth: 345 }}/>
             })}
