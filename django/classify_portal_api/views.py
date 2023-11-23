@@ -1,21 +1,53 @@
 from rest_framework import generics
 from listings.models import Listing, ListingLocation, ListingImage
 from rest_framework.response import Response
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 from classify_portal_api.serializers import ListingSerializerMainPage, UserListingOverview
 from classify_portal_api.serializers import ListingSerializerDetails, LocationSerializer
+from rest_framework import viewsets
 
 # using the custom manager to return active listings only
-class ListingsList(generics.ListCreateAPIView):
-    queryset = Listing.active_listings.all()
-    serializer_class = ListingSerializerMainPage
 
-class ListingShow(generics.RetrieveDestroyAPIView):
-    queryset = Listing.all_listings.all()
-    serializer_class = ListingSerializerDetails
-    def get(self, request, *args, **kwargs):
-        listing = self.get_object()
-        listing.inc_view_count()
-        return super().get(request, *args, **kwargs)
+class UpdateDeletePermission(BasePermission):
+    message = "You are not the owner of this listing"
+    def has_object_permission(self, request, view, obj):
+        if request.method in SAFE_METHODS:
+            return True
+        return obj.owner == request.user
+
+class ActiveListingViewSet(viewsets.ViewSet):
+    queryset = Listing.active_listings.all()
+
+    def list(self, request): 
+        serializer = ListingSerializerMainPage(self.queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk): 
+        try:
+            listing = self.queryset.get(pk=pk)
+        except Listing.DoesNotExist:
+            return Response({"detail": "Listing not found"}, status=404)
+        if request.user != listing.owner:
+            listing.inc_view_count()
+        serializer = ListingSerializerDetails(listing)
+        return Response(serializer.data)
+
+
+
+
+# class ListingsList(generics.ListCreateAPIView):
+#     queryset = Listing.active_listings.all()
+#     serializer_class = ListingSerializerMainPage
+
+# class ListingShow(generics.RetrieveDestroyAPIView, UpdateDeletePermission):
+#     queryset = Listing.all_listings.all()
+#     serializer_class = ListingSerializerDetails
+#     def get(self, request, *args, **kwargs):
+#         listing = self.get_object()
+#         #TODO: Check whether it's working!
+#         if request.user != listing.owner:
+#             listing.inc_view_count()
+#         return super().get(request, *args, **kwargs)
 
 class LocationsList(generics.ListCreateAPIView):
     queryset = ListingLocation.locations.all()

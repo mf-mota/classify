@@ -3,11 +3,23 @@ from django.contrib.auth.models import User
 from django.db.models.query import QuerySet #Django default user model
 from django.utils import timezone
 
-class ListingCategory(models.Model):
-    name = models.CharField(max_length=30)
 
+class MainCategory(models.Model):
+    name = models.CharField(max_length=30, unique=True)
     def __str__(self):
         return self.name
+    prop1_name = models.CharField(max_length=30, blank=True)
+    prop2_name = models.CharField(max_length=30, blank=True)
+    prop3_name = models.CharField(max_length=30, blank=True)
+    prop4_name = models.CharField(max_length=30, blank=True)
+    class Meta:
+        verbose_name_plural = "main categories"
+
+class ListingCategory(models.Model):
+    name = models.CharField(max_length=30, unique=True)
+    main = models.ForeignKey(MainCategory, on_delete=models.PROTECT)
+    def __str__(self):
+        return f'{self.main}-{self.name}'
     
     class Meta:
         verbose_name_plural = "listing categories"
@@ -51,6 +63,7 @@ class Listing(models.Model):
         self.save()
         return True
 
+
     name = models.CharField(max_length=50)
     category = models.ForeignKey(ListingCategory, on_delete=models.PROTECT)
     description = models.TextField()
@@ -70,6 +83,7 @@ class Listing(models.Model):
     active_listings = ActiveListings()
     draft_listings = DraftListings()
     
+    cat_spec_properties = models.JSONField(default=dict)
 
 
     class Meta:
@@ -77,7 +91,6 @@ class Listing(models.Model):
     def __str__(self):
         return f"{self.category}/{self.name}"
     
-
 class ListingImage(models.Model):
     class MainImage(models.Manager):
         def get_queryset(self) -> QuerySet:
