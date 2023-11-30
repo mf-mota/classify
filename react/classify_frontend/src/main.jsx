@@ -7,17 +7,27 @@ import './components/layout/Navbar.jsx'
 import Navbar from './components/layout/Navbar.jsx'
 import { Box } from '@mui/material'
 import UserDashboard from './components/UserDashboard.jsx'
+import SignUp from './components/SignUp.jsx'
+import SignIn from './components/SignIn.jsx'
+import { AuthProvider } from './context/JwtAuthContext.jsx'
+import ProtectedRoutes from './ProtectedRoutes.jsx'
+
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
-      <Navbar />
-      <Box className="main-container">
-      <Routes className="sub-cont">
-        <Route path="/" element={<App />} />
-        <Route path="/listings/:id" element={<Listing />} />
-        <Route path="/profile" element={<UserDashboard />} />
-      </Routes>
-      </Box>
-      <Box>Here goes the footer #TODO</Box>
-  </BrowserRouter>
+    <AuthProvider>
+        <Navbar />
+        <Box className="main-container">
+        <Routes className="sub-cont">
+          <Route path="/" element={<App />} />
+          <Route path="/listings/:id" element={<Listing />} />
+          {/* <Route path="/profile" element={<UserDashboard />} /> */}
+          <Route path="/register" element={<SignUp />} />
+          <Route path="/login" element={<SignIn />} />
+          <Route path="*" element={<ProtectedRoutes />} />
+        </Routes>
+        </Box>
+        <Box>Here goes the footer #TODO</Box>
+      </AuthProvider>
+    </BrowserRouter>
 )

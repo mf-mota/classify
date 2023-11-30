@@ -11,6 +11,10 @@ class MainCategorySerializer(serializers.ModelSerializer):
         model = MainCategory
         fields = ['id', 'name', 'prop1_name', 'prop2_name', 'prop3_name', 'prop4_name']
 
+class MainCategorySerializerMain(MainCategorySerializer):
+    class Meta(MainCategorySerializer.Meta):
+        fields = ['name', 'id', 'icon']
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ListingCategory

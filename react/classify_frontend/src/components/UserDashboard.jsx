@@ -1,14 +1,17 @@
 import { Grid, Box, Typography } from "@mui/material"
 import { useState, useEffect } from "react"
-import api from '../api/listings'
+import api from '../api/apiConn'
 import ListingCard from "./ListingCard"
+import { useContext } from "react"
+import JwtAuthContext from "../context/JwtAuthContext"
 
 export default function UserDashboard () {
+    const {user} = useContext(JwtAuthContext)
     const [userListings, setUserListings] = useState([])
     useEffect(() => {
         const getListings = async () => {
             try {
-                const res = await api.get('/users/1/');
+                const res = await api.get(`/users/${user.user_id}/`);
                 if (res && res.data) setUserListings(res.data);
                 console.log(res.data)
             } catch (e) {

@@ -17,7 +17,7 @@ import './assets/styles/ListingDetail.css'
 export default function ListingDetailPrice({price}) {
 
   return (
-    <Card className="price-card">
+    <Card className="price-card" sx={{ml: {md: '3rem'}}}>
         <Typography variant="h6">Price</Typography>
         <Box sx={{width: '100%'}}>
             <hr />

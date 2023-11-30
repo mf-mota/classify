@@ -1,10 +1,13 @@
 from rest_framework import generics
-from listings.models import Listing, ListingLocation, ListingImage
+from listings.models import Listing, ListingLocation, ListingImage, MainCategory
 from rest_framework.response import Response
-from rest_framework.permissions import BasePermission, SAFE_METHODS
+from rest_framework.permissions import BasePermission, SAFE_METHODS, IsAuthenticated
 from classify_portal_api.serializers import ListingSerializerMainPage, UserListingOverview
-from classify_portal_api.serializers import ListingSerializerDetails, LocationSerializer
+from classify_portal_api.serializers import ListingSerializerDetails, LocationSerializer, MainCategorySerializerMain
 from rest_framework import viewsets
+from rest_framework import status
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
 
 # using the custom manager to return active listings only
 
@@ -17,6 +20,7 @@ class UpdateDeletePermission(BasePermission):
 
 class ActiveListingViewSet(viewsets.ViewSet):
     queryset = Listing.active_listings.all()
+    permission_classes = [IsAuthenticated]
 
     def list(self, request): 
         serializer = ListingSerializerMainPage(self.queryset, many=True)
@@ -48,6 +52,10 @@ class ActiveListingViewSet(viewsets.ViewSet):
 #         if request.user != listing.owner:
 #             listing.inc_view_count()
 #         return super().get(request, *args, **kwargs)
+
+class MainCategoriesList(generics.ListAPIView):
+    queryset = MainCategory.objects.all()
+    serializer_class = MainCategorySerializerMain
 
 class LocationsList(generics.ListCreateAPIView):
     queryset = ListingLocation.locations.all()

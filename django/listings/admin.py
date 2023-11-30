@@ -5,6 +5,10 @@ from . import models
 class ListingCategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'id']
 
+@admin.register(models.MainCategory)
+class MainCategoryAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name']
+
 @admin.register(models.Listing)
 class ListingAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'category', 'description', 

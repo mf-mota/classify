@@ -14,7 +14,11 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const pages = ['New Classified Ad'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = [{setting: 'Profile', url: '/profile'}, 
+{setting: 'Account', url: ''}, 
+{setting: 'Dashboard', url: ''}, 
+{setting: 'Logout', url: ''}
+];
 
 export default function Navbar() {
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -158,9 +162,11 @@ export default function Navbar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+              {settings.map((s, ix) => (
+                <MenuItem key={ix} onClick={handleCloseUserMenu}>
+                  <Link to={s.url}>
+                  <Typography textAlign="center" color="black">{s.setting}</Typography>
+                  </Link>
                 </MenuItem>
               ))}
             </Menu>

@@ -6,13 +6,13 @@ import { useState, useEffect } from 'react'
 
 export default function ListingCarousel({listing})
 {
+    const [isFullscreen, setIsFullscreen] = useState(false);
     if (!listing || !listing.id) {
         return <div>Loading...</div>
     }
     if (!listing.images[0]) {
         listing.images.push({url: "https://f005.backblazeb2.com/file/cars-dealers/Template+Images/no_photo_default.jpg"})
     }
-    const [isFullscreen, setIsFullscreen] = useState(false);
     const toggleFullscreen = (e) => {
         e.stopPropagation();
         if (e.target.tagName.toUpperCase() !== "IMG") return;

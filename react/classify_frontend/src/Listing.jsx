@@ -2,21 +2,19 @@ import { useParams } from "react-router-dom"
 import Grid from '@mui/joy/Grid';
 import ListingCarousel from './components/ListingCarousel'
 import { useState, useEffect } from "react";
-import api from './api/listings'
+import api from './api/apiConn'
 import ListingOwnerCard from "./components/ListingOwnerCard";
 import ListingDetailPrice from './ListingDetailPrice'
-import { Card } from "@mui/material";
-import {Typography} from "@mui/material";
-import {Box} from "@mui/material";
 import ListingDetailDesc from "./components/ListingDetailDesc";
 
-export default function Listings() {
+export default function Listing() {
     const {id} = useParams()
     const [listing, setListing] = useState([])
     useEffect(() => {
         async function getListing() {
             try {
                 const res = await api.get(`/listings/${id}`);
+                console.log(res.data);
                 if (res && res.data) {
                     setListing(res.data);
                 }
@@ -25,8 +23,6 @@ export default function Listings() {
             }
         }
         getListing()
-
-
     }, [])
     return (
         <>
@@ -36,15 +32,14 @@ export default function Listings() {
             </Grid> */}
             <Grid xs={12} md={8}>
                 <ListingCarousel listing={listing}/>
+
             </Grid>
-            <Grid xs={12} md={4}>
+            <Grid xs={12} md={4} sx={{display: 'flex', flexDirection: 'column', justifyContent: "center"}}>
                 <ListingDetailPrice price={listing.price} />
-            
                 <ListingOwnerCard user={listing.owner} location={listing.location}/>
-                <div>{id} Seller details xs=6 md=4</div>
             </Grid>
             <Grid xs={12}>
-                <ListingDetailDesc desc={listing.description}/>
+                <ListingDetailDesc desc={listing.description} props={listing.spec_props}/>  
             </Grid>
         </Grid>
         </>

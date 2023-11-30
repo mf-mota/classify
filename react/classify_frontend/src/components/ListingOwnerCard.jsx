@@ -21,7 +21,7 @@ export default function ListingOwnerCard({user, location}) {
     }
     console.log("user", user)
   return (
-    <Card className="owner-card">
+    <Card className="owner-card" sx={{ml: {md: '3rem'}}}>
         <Avatar alt={user ? user.first_name : " "} src="/static/images/avatar/userphoto.jpg" sx={{width: '8rem', height: '8rem', fontSize: '4rem' }}/>
       <CardActionArea >
         <CardContent>

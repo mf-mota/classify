@@ -12,6 +12,7 @@ class MainCategory(models.Model):
     prop2_name = models.CharField(max_length=30, blank=True)
     prop3_name = models.CharField(max_length=30, blank=True)
     prop4_name = models.CharField(max_length=30, blank=True)
+    icon = models.CharField(max_length=200, default="SETDEFAULTIMGURL.COM")
     class Meta:
         verbose_name_plural = "main categories"
 

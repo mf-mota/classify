@@ -12,26 +12,26 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import {Box} from '@mui/material';
 
 
-export default function ListingCard({details}) {
+export default function CategoryCard({category}) {
   return (
-    <Card sx={{border: '2px solid #00000055', width: '20%', maxWidth: '320px', minWidth: '300px', my: 3, boxShadow: '5px 5px 5px #00000052'}}>
-    <Link underline='none' component={RouterLink} to={`/listings/${details.id}`} 
-    sx={{ color: 'inherit', textDecoration: 'none', '&:hover': {
+    <Card sx={{ maxWidth: {xs: '50%', md: '33%', lg: '25%'}, maxHeight: {xs: '50px', md: '150px'}, border: '3px solid white', boxSizing: 'border-box', mt: '-2.7px'}}>
+    <Link underline='none' component={RouterLink} to={`/listings/`}  // TODO: change to Search
+    sx={{ display: 'flex', color: 'inherit', textDecoration: 'none', '&:hover': {
       color: 'inherit', textDecoration: 'none',
     } }}>
-      <CardActionArea >
+        <CardContent sx={{display: 'flex', justifyContent: 'space-between', boxSizing: 'border-box', py: '0px !important', backgroundColor: '#232D3F', color: 'white', maxHeight: {xs: '50px', md: '150px'}}}>
         <CardMedia
           component="img"
-          image={details.images[0] ? details.images[0].url : "https://f005.backblazeb2.com/file/cars-dealers/Template+Images/no_photo_default.jpg" }
-          alt={details.name + ' image'}
-          sx={{ objectFit: 'contain', height: '200px' }}
+          image={category.icon}
+          alt="Category image"
+          sx={{ objectFit: 'contain', height: '100% !important', maxHeight: '100%', maxWidth: '33%' }}
         />
-        <CardContent>
-          
-          <Typography gutterBottom component="div" sx={{whiteSpace: 'nowrap', fontSize: { xs: '1rem', sm: '1.2rem', md: '1.4rem' }}}>
-            {details.name}
+        <Box sx={{textAlign: 'center', width: '100%', alignSelf: 'center'}}>
+          <Typography component="div" sx={{whiteSpace: 'wrap', fontSize: { xs: '1rem', sm: '1rem', md: '1.2rem' }}}>
+            {category.name}
           </Typography>
-          <hr />
+        </Box>
+          {/* <hr />
           <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
           <Typography variant="body3" color="text.secondary">
             PLN <strong>{details.price.toLocaleString("pl-pl")}</strong>
@@ -42,21 +42,9 @@ export default function ListingCard({details}) {
             {details.location.city}
           </Typography>
           </Box>
-          </Box>
+          </Box> */}
         </CardContent>
-      </CardActionArea>
-      </Link>
-      <CardActions sx={{display: 'flex', justifyContent: 'space-evenly'}}>
-        <Button size="small" color="primary">
-          <ShareIcon />
-        </Button>
-        <Button size="small" color="primary">
-          <FavoriteBorderIcon />
-        </Button>
-        <Button size="small" color="primary">
-          <FlagIcon />
-        </Button>
-      </CardActions>
+        </Link>
     </Card>
   );
 }
