@@ -1,13 +1,15 @@
 import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
 
+const baseURL = "http://localhost:8000/api"
+
 const tokens = {
     access: localStorage.getItem('access_tk') ? localStorage.getItem('access_tk') : null,
     refresh: localStorage.getItem('refresh_tk') ? localStorage.getItem('refresh_tk') : null
 }
 
 const axiosPriv = axios.create({
-    baseURL: "http://localhost:8000/api",
+    baseURL: baseURL,
     timeout: 6000,
     headers: {
         Authorization: localStorage.getItem('access_tk') ? "Bearer" + " " + localStorage.getItem('access_tk') : null,
@@ -19,14 +21,30 @@ const axiosPriv = axios.create({
 axiosPriv.interceptors.request.use(async request => {
     console.log('Interceptor ran')
     if (!tokens.access) {
-        tokens.access = localStorage.getItem('access_tk') ? localStorage.getItem('access_tk') : null
+        if (localStorage.getItem('access_tk')) {
+            console.log("Setting access_tk")
+            tokens.access = localStorage.getItem('access_tk')
+        }
+        else {
+            tokens.access = null;
+            return request
+        }
     }
 
     const user = jwtDecode(tokens.access)
     const isTokenExpired = (Date.now() / 1000) - user.exp > 0
     console.log('isTokenExpired: ', isTokenExpired)
-    if (!isTokenExpired) return request
 
+    if (!isTokenExpired) return request;
+    
+    console.log("Hitting the refresh endpoint")
+    const res = await axios.post(baseURL + "/token/refresh/", {refresh: tokens.refresh})
+    console.log(res.data.access)
+    if (res.data.access) {
+        console.log("Setting new access token")
+        tokens.access = res.data.access
+        request.headers.Authorization = "Bearer" + " " + res.data.access
+    }
     return request
 })
 

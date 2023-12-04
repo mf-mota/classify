@@ -4,10 +4,18 @@ import api from '../api/apiConn'
 import ListingCard from "./ListingCard"
 import { useContext } from "react"
 import JwtAuthContext from "../context/JwtAuthContext"
+import { Button } from "@mui/material"
+import EditIcon from '@mui/icons-material/Edit';
+import usePrivApi from '../utils/hooks/usePrivApi'
 
 export default function UserDashboard () {
     const {user} = useContext(JwtAuthContext)
     const [userListings, setUserListings] = useState([])
+    const api = usePrivApi()
+    const handleDelete = async (id) => {
+        await api.delete(`/listings/${id}/`)
+        console.log("tryna delete")
+    }
     useEffect(() => {
         const getListings = async () => {
             try {
@@ -33,7 +41,14 @@ export default function UserDashboard () {
                         console.log(l)
                         return (
                         <Box key={l.id} sx={{backgroundColor: '#00000044', p: 3, borderRadius: '1rem'}}>
-                            <Typography color="primary" sx={{fontWeight: 'bold'}}>Status: {l.is_active == "active" ? "Active" : "Draft"}</Typography>
+                            <Box sx={{display: 'flex', alignItems: 'center', justifyContent: "space-between",}}>
+                                <Typography color="primary" sx={{fontWeight: 'bold'}}>Status: {l.is_active == "active" ? "Active" : "Draft"}</Typography>
+                                <div>
+                                    <Button size="small" sx={{mr: 1}}><EditIcon /></Button>
+                                    <Button onClick={() => handleDelete(l.id)} size="small" sx={{color: 'white', border: '1px solid white', '&:hover': {backgroundColor: '#FF0000AA', border: '1px solid white'}}}>DELETE</Button>
+
+                                </div>
+                            </Box>
                             <ListingCard key={l.id} details={l} sx={{ maxWidth: 345 }}/>
                             <Typography color="primary" sx={{fontWeight: 'bold'}}>Clicks: {l.view_count}</Typography>
 

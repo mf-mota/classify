@@ -12,15 +12,23 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useContext } from 'react';
+import JwtAuthContext from '../../context/JwtAuthContext'
+import { useNavigate } from 'react-router-dom';
+import React from 'react'
 
-const pages = ['New Classified Ad'];
-const settings = [{setting: 'Profile', url: '/profile'}, 
-{setting: 'Account', url: ''}, 
-{setting: 'Dashboard', url: ''}, 
-{setting: 'Logout', url: ''}
-];
 
 export default function Navbar() {
+  const navigate = useNavigate()
+  const pages = ['New Classified Ad'];
+  const {logout, user} = useContext(JwtAuthContext)
+  const settings = [{setting: 'Profile', url: '/profile'}, 
+  {setting: 'Account', url: ''}, 
+  {setting: 'Dashboard', url: ''}, 
+  {setting: 'Logout', onClick: logout}
+  ];
+
+
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
 
@@ -41,9 +49,9 @@ export default function Navbar() {
 
   return (
     <AppBar position="static" sx={{
-        width: '100vw',
+        width: '100%',
         backgroundColor: '#232D3F',
-        marginBottom: 6
+        marginBottom: 6,
     }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
@@ -128,6 +136,7 @@ export default function Navbar() {
             }}}><span>CLASSIFY</span></Link>
 
           </Typography>
+          {user ? ( <React.Fragment>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'end', mr:6}}>
             {pages.map((page) => (
               <Button
@@ -139,7 +148,6 @@ export default function Navbar() {
               </Button>
             ))}
           </Box>
-
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -165,12 +173,21 @@ export default function Navbar() {
               {settings.map((s, ix) => (
                 <MenuItem key={ix} onClick={handleCloseUserMenu}>
                   <Link to={s.url}>
-                  <Typography textAlign="center" color="black">{s.setting}</Typography>
+                  <Typography textAlign="center" color="black" onClick={s.onClick && s.onClick}>{s.setting}</Typography>
                   </Link>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
+          </React.Fragment>)
+          : (
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'end'}}>
+              <Button onClick={() => navigate('/login')}
+                sx={{ border: '1px solid white', '&:hover': {backgroundColor: '#FFFFFF44', border: '1px solid white'}, my: 2, mx: 1, color: 'white', display: 'block', alignSelf: 'end' }}
+              >Login
+              </Button>
+          </Box>
+          )}
         </Toolbar>
       </Container>
     </AppBar>

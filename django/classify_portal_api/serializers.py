@@ -19,11 +19,12 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ListingCategory
         fields = ['id', 'name', 'main']
+        depth = 2
 
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ListingLocation
-        fields = ['district', 'city', 'state', 'country']
+        fields = ['id', 'district', 'city', 'state', 'country']
 
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -43,7 +44,6 @@ class ListingSerializerMainPage(serializers.ModelSerializer):
         instance_data = super().to_representation(instance)
         instance_data['images'] = images_serializer.data
         return instance_data
-    
 
 class ListingSerializerDetails(serializers.ModelSerializer):
     images = ImageSerializer(many=True, read_only=True)

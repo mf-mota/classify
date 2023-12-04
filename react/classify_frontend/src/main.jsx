@@ -11,6 +11,7 @@ import SignUp from './components/SignUp.jsx'
 import SignIn from './components/SignIn.jsx'
 import { AuthProvider } from './context/JwtAuthContext.jsx'
 import ProtectedRoutes from './ProtectedRoutes.jsx'
+import ListingFormPage from './components/ListingFormPage.jsx'
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -25,6 +26,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/register" element={<SignUp />} />
           <Route path="/login" element={<SignIn />} />
           <Route path="*" element={<ProtectedRoutes />} />
+          <Route path="new-listing" element={<ListingFormPage />}/>
         </Routes>
         </Box>
         <Box>Here goes the footer #TODO</Box>

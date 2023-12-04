@@ -8,3 +8,4 @@ urlpatterns = [
     path('api/', include('classify_portal_api.urls', namespace="classify_portal_api")),
     path('', include('listings.urls', namespace="listings")),
 ]
+

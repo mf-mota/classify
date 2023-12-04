@@ -15,13 +15,31 @@ export const AuthProvider = ({children}) => {
 
     const navigate = useNavigate()
 
+    useEffect(()=> {
+
+        if(tokens.access){
+            console.log(tokens.access)
+            setUser(jwtDecode(tokens.access))
+            setLoading(false)
+        }
+        else {
+            console.log("No tokens")
+            setLoading(false)
+        }
+        console.log("use effect ran")
+
+
+
+    }, [tokens, loading, navigate])
+
     const login = async (data, setServerErrors) => {
         await apiPriv.post('token/', data)
         .then((res) => {
             if (res.status === 200) {
                 localStorage.setItem('access_tk', res.data.access)
                 localStorage.setItem('refresh_tk', res.data.refresh)
-                setTokens(data)
+                console.log("login, setting tokens to", res.data)
+                setTokens(res.data)
                 setUser(jwtDecode(res.data.access))
                 navigate('/')
             // call tokens here!
@@ -73,28 +91,38 @@ export const AuthProvider = ({children}) => {
         }
     }
 
+    const logout = () => {
+        try {
+            setLoading(true)
+            console.log("deleting local storage")
+            localStorage.removeItem('access_tk', null)
+            localStorage.removeItem('refresh_tk', null)
+            setTokens({access: null, refresh: null})
+            setUser(null)
+            console.log("navifating to /")
+            navigate('/')
+        }
+        catch (e) {
+            console.log("An error occurred while logging you out!", e)
+        }
+    }
+    
+
     const contextData = {
         user: user,
         tokens: tokens,
         setTokens: setTokens,
         setUser: setUser,
         login: login,
+        logout: logout,
         validateToken: validateToken,
     }
 
-    useEffect(()=> {
 
-        if(tokens){
-            // setUser(jwtDecode(tokens.access))
-        }
-        setLoading(false)
-
-
-    }, [tokens, loading])
 
     return(
         <AuthContext.Provider value={contextData} >
-            {loading ? null : children}
+            {children}
         </AuthContext.Provider>
     )
 }

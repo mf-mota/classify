@@ -1,6 +1,7 @@
 from django.urls import path
 # from .views import ListingsList, ListingShow
-from .views import LocationsList, UserListingsList, MainCategoriesList
+from .views import LocationsList, UserListingsList, MainCategoriesList, SubCategoriesList
+from .views import upload_to_backblaze
 from .views import ActiveListingViewSet
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (
@@ -23,7 +24,10 @@ urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/validate/', TokenVerifyView.as_view(), name='validate_token'),
-    path("categories/", MainCategoriesList.as_view(), name="main_categories_list")
+    path("categories/", MainCategoriesList.as_view(), name="main_categories_list"),
+    path("subcategories/", SubCategoriesList.as_view(), name="subcategories_list"),
+    path("locations", LocationsList.as_view(), name="locations_list"),
+    path('upload_listing_images', upload_to_backblaze, name='upload_imgs')
 ]
 
 router = DefaultRouter()

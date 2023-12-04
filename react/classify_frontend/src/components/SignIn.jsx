@@ -25,7 +25,7 @@ export default function SignIn() {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm({ mode: "onChange" });
+    } = useForm({ mode: "onChange" });      
     const navigate = useNavigate();
     const [serverErrors, setServerErrors] = useState([])
     const {login} = useContext(JwtAuthContext)

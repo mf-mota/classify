@@ -1,10 +1,11 @@
-import api from '../api/apiPrivConn'
+import usePrivApi from '../utils/hooks/usePrivApi'
 import { useState, useEffect } from 'react'
 import { Box } from '@mui/material'
 import ListingCard from './ListingCard'
 
 export default function CardListingsGrid () {
     const [listings, setListings] = useState([])
+    const api = usePrivApi()
     useEffect(() => {
         const getListings = async () => {
             try {
@@ -21,10 +22,9 @@ export default function CardListingsGrid () {
     }, [])
     return (
     <Box component="main" display="flex"
-sx={{justifyContent: "space-around", flexWrap: "wrap"}}>
-    {listings.map(l => {
-        return <ListingCard key={l.id} details={l} sx={{ maxWidth: 345 }}/>
-    })}
- </Box>
-    )
+            sx={{justifyContent: "space-around", flexWrap: "wrap"}}>
+        {listings.map(l => {
+            return <ListingCard key={l.id} details={l} sx={{ maxWidth: 345 }}/>
+        })}
+    </Box>)
 }
