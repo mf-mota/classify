@@ -6,7 +6,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.permissions import BasePermission, SAFE_METHODS, IsAuthenticated
-from classify_portal_api.serializers import ListingSerializerMainPage, UserListingOverview
+from classify_portal_api.serializers import ListingSerializerMainPage, UserListingOverview, ListingPostSerializer, ImageSerializer
 from classify_portal_api.serializers import ListingSerializerDetails, LocationSerializer, MainCategorySerializerMain, CategorySerializer
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -16,6 +16,8 @@ from django.views.decorators.http import require_POST
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from b2sdk.v1 import B2Api
 import environ
+import json
+
 env = environ.Env()
 environ.Env.read_env()
 
@@ -59,13 +61,29 @@ class ActiveListingViewSet(viewsets.ViewSet, UpdateDeletePermission):
             listing = queryset.get(pk=pk)
             print(listing.owner)
         except Listing.DoesNotExist:
-            return Response({"detail": "Listin not found"}, status=404)
+            return Response({"detail": "Listing not found"}, status=404)
         else:
             if listing.owner.id == request.user.id:
                 listing.delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)
             return Response(status=status.HTTP_401_UNAUTHORIZED)
-        
+    
+    def create(self, request):
+        print(request)
+        print("user: ", request.user)
+        if not request.user.is_authenticated:
+            return Response({"detail": "Authentication required"}, status=401)
+        serializer = ListingPostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.validated_data['owner'] = request.user
+            listing = serializer.save()
+            data = {
+                'id': listing.id,
+                'message': 'Created Successfully'
+            }
+            return Response(data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
     def get_permissions(self):
         print("permission ran", self.request.method == 'DELETE')
@@ -74,7 +92,7 @@ class ActiveListingViewSet(viewsets.ViewSet, UpdateDeletePermission):
         return []
     
     def get_authenticators(self):
-        if self.request.method == 'DELETE':
+        if self.request.method in ('DELETE', 'POST') :
             return [JWTAuthentication()]
         return []
     
@@ -95,8 +113,6 @@ class ActiveListingViewSet(viewsets.ViewSet, UpdateDeletePermission):
 #         listing = self.get_object()
 #         listing.delete()
 #         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
 
 class MainCategoriesList(generics.ListAPIView):
     queryset = MainCategory.objects.all()
@@ -119,6 +135,23 @@ class UserListingsList(generics.ListCreateAPIView):
     def get_queryset(self):
         return Listing.all_listings.filter(owner=self.kwargs.get('user_id'))
 
+class AppendImageToListing(generics.CreateAPIView):
+    queryset = ListingImage.objects.all()
+    serializer_class = ImageSerializer
+
+    # override the create method to append multiple images in a single HTTP Post request
+    def create(self, request, *args, **kwags):
+        image_list = request.data
+        print(image_list)
+        img_list = [json.loads(image_info) for image_info in image_list]
+        for image_info in img_list:
+            print(image_info)
+            serializer = ImageSerializer(data=image_info)
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                return Response({'message': 'Serialization went wrong'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'message': "OK"}, status=status.HTTP_201_CREATED)
 
 # image upload using Backblaze, example of function view
 @csrf_exempt

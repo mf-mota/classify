@@ -12,20 +12,23 @@ export default function UserDashboard () {
     const {user} = useContext(JwtAuthContext)
     const [userListings, setUserListings] = useState([])
     const api = usePrivApi()
+
+    const getListings = async () => {
+        try {
+            const res = await api.get(`/users/${user.user_id}/`);
+            if (res && res.data) setUserListings(res.data);
+            console.log(res.data)
+        } catch (e) {
+            console.log("An error occurred while retrieving the data", e);
+        }
+    }
+
     const handleDelete = async (id) => {
         await api.delete(`/listings/${id}/`)
         console.log("tryna delete")
+        getListings()
     }
     useEffect(() => {
-        const getListings = async () => {
-            try {
-                const res = await api.get(`/users/${user.user_id}/`);
-                if (res && res.data) setUserListings(res.data);
-                console.log(res.data)
-            } catch (e) {
-                console.log("An error occurred while retrieving the data", e);
-            }
-        }
         getListings()
     }, [])
     return (

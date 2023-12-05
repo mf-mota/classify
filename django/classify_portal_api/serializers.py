@@ -60,7 +60,7 @@ class ListingSerializerDetails(serializers.ModelSerializer):
     
     class Meta:
         model = Listing
-        fields = ['id', 'name', 'description', 'category', 'price', 'location', 'owner', 'is_active', 'images']
+        fields = ['id', 'name', 'description', 'category', 'price', 'owner', 'location', 'is_active', 'images']
 
     @property
     def data(self):
@@ -69,6 +69,11 @@ class ListingSerializerDetails(serializers.ModelSerializer):
         spec_props = {value for key, value in specs.items() if key.startswith('prop') and value != ""}
         data['spec_props'] = spec_props
         return data
+    
+class ListingPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Listing
+        fields = ['name', 'description', 'category', 'price', 'location', 'is_active', 'cat_spec_properties']
 
 class UserListingOverview(ListingSerializerMainPage):
     class Meta:

@@ -74,7 +74,7 @@ export default function ListingSteps({activeStep, setActiveStep}) {
           );
         })}
       </Stepper>
-      {activeStep === steps.length ? (
+      {/* {activeStep === steps.length ? (
         <React.Fragment>
           <Typography sx={{ mt: 2, mb: 1 }}>
             All steps completed - you&apos;re finished
@@ -107,8 +107,8 @@ export default function ListingSteps({activeStep, setActiveStep}) {
               {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
             </Button>
           </Box>
-        </React.Fragment>
-      )}
+        </React.Fragment> */}
+      {/* )} */}
     </Box>
   );
 }

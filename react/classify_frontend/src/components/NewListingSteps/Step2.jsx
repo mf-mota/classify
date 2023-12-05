@@ -2,67 +2,58 @@ import api from '../../api/apiConn'
 // import { useHistory } from 'react-router-dom'
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useForm } from 'react-hook-form'
 import { v4 as uuid } from 'uuid'
-import { signUpOptions } from '../../utils/validations'
-import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
 import { FormControl } from '@mui/material';
-import { listingOptions } from '../../utils/listingValidations'
-
-
-
+import {Input} from '@mui/material';
+import { signUpOptions } from '../../utils/validations'
 
 
 
 export default function Step2({props}) {
-    const {locations, setLocations, categories, setCategories, setStep, setListing} = props
+    const {setStep, setListing} = props
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm({ mode: "onChange" });
 
-    const navigate = useNavigate();
-    const [serverErrors, setServerErrors] = useState([])
-
-    const getLocations = async () => {
-        try {
-            const res = await api.get('/locations')
-            return res
-        } catch (e) {
-            console.log("An error occurred retrieving the locations: ", e)
-        }
-    }
-    const getCategories = async () => {
-        try {
-            const res = await api.get('/subcategories')
-            return res
-        } catch (e) {
-            console.log("An error occurred retrieving the categories: ", e)
-        }
-    }
-
-    const resetErrors = () => {
-        serverErrors.length > 0 && setServerErrors([])
-    }
-
     const handleError = (errors) => console.log("Errors: ", errors)
 
     const handleNext = (data) => {
-        setListing(listing => ({...listing, ...data}))
+        uploadImages(data.mainImage).then(res => {
+            console.log(res.data.urls)
+            setListing(listing => ({...listing, mainImage: res.data.urls[0]}))
+        })
+        data.otherImages && uploadImages(data.otherImages).then(res => {
+            setListing(listing => ({...listing, otherImages: res.data.urls}))
+        })
         errors ? setStep(step => step + 1) : null
+    }
+
+    const uploadImages = async (data) => {
+        try {
+            const formData = new FormData();
+            console.log(data)
+            console.log("length", data.length)
+            for (let file of data) {
+                formData.append('images', file);
+            }
+            
+            const url = api.post('/upload_listing_images/', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }})
+            console.log("image(s) uploaded")
+            return url
+        } catch (e) {
+            console.log("An error occurred uploading your images: ", e)
+        }
     }
 
     return (
@@ -77,48 +68,34 @@ export default function Step2({props}) {
             }}
         >
             <Typography component="h1" variant="h5">
-            Please enter the details
+            Please share some pictures!
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit(handleNext, handleError)} sx={{ mt: 6, minWidth: '40vw', minHeight: '50vh'}}>
                 <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <TextField
-                        required
-                        fullWidth
-                        id="title"
-                        label="Title"
-                        name="name"
-                        {...register("last_name", {...listingOptions.title, 
-                        })}
-                    />
+                    <Grid item xs={12}>
+                        <InputLabel>Main Image</InputLabel>
+                        <FormControl fullWidth>
+                            <Input
+                                {...register("mainImage", {
+                                    required: "Main image is required",
+                                })}
+                                type="file"
+                                id="picture"
+                            />
+                        </FormControl>
                     </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        required
-                        fullWidth
-                        type="number"
-                        id="price"
-                        label="Price (PLN)"
-                        name="price"
-                        {...register("price", {...listingOptions.price, 
-                        })}
-                    />
+                    <Grid item xs={12}>
+                    <InputLabel>Remaining Images</InputLabel>
+                        <FormControl fullWidth>
+                            <Input
+                                {...register("otherImages")}
+                                inputProps={{ multiple: true }}
+                                type="file"
+                                id="picture"
+                            />
+                        </FormControl>
+                    </Grid>           
                 </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        required
-                        fullWidth
-                        id="description"
-                        multiline
-                        rows={6}
-                        label="Description"
-                        name="description"
-                        {...register("description", {...listingOptions.description, 
-                        })}
-                    />
-                </Grid>
-                
-            </Grid>
             <Grid container justifyContent="center" flexDirection="column" mt={2} aria-label="Validation Errors">
                 {console.log(Object.keys(errors))}
                 {Object.keys(errors).map((fieldName) => { 

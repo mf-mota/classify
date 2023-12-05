@@ -27,42 +27,22 @@ import { listingOptions } from '../../utils/listingValidations'
 
 
 export default function Step1({props}) {
-    const {locations, setLocations, categories, setCategories, setStep, setListing} = props
+    const {listing, setStep, setListing} = props
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm({ mode: "onChange" });
 
-    const navigate = useNavigate();
-    const [serverErrors, setServerErrors] = useState([])
-
-    const getLocations = async () => {
-        try {
-            const res = await api.get('/locations')
-            return res
-        } catch (e) {
-            console.log("An error occurred retrieving the locations: ", e)
-        }
-    }
-    const getCategories = async () => {
-        try {
-            const res = await api.get('/subcategories')
-            return res
-        } catch (e) {
-            console.log("An error occurred retrieving the categories: ", e)
-        }
-    }
-
-    const resetErrors = () => {
-        serverErrors.length > 0 && setServerErrors([])
-    }
-
     const handleError = (errors) => console.log("Errors: ", errors)
 
     const handleNext = (data) => {
         setListing(listing => ({...listing, ...data}))
         errors ? setStep(step => step + 1) : null
+    }
+
+    const getCatProps = () => {
+        api.get('/')
     }
 
     return (
@@ -88,7 +68,7 @@ export default function Step1({props}) {
                         id="title"
                         label="Title"
                         name="name"
-                        {...register("last_name", {...listingOptions.title, 
+                        {...register("name", {...listingOptions.title, 
                         })}
                     />
                     </Grid>
@@ -117,6 +97,25 @@ export default function Step1({props}) {
                         })}
                     />
                 </Grid>
+                {console.log(listing, "from step1")}
+                {listing?.category ? Object.keys(listing.category.props).map((key) => {
+                    if (listing.category.props[key] !== "") {
+                    return (
+                    <Grid key={key} item xs={12}>
+                        <TextField
+                            required
+                            fullWidth
+                            id={listing.category.props[key]}
+                            label={listing.category.props[key]}
+                            name={listing.category.props[key]}
+                            {...register(`props.${key}`, {...listingOptions[listing.category.props[key]], 
+                            })}
+                        />
+                        </Grid>
+                    )
+                    }
+                }) : null }
+                
                 
             </Grid>
             <Grid container justifyContent="center" flexDirection="column" mt={2} aria-label="Validation Errors">

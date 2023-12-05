@@ -2,19 +2,13 @@ import api from '../../api/apiConn'
 // import { useHistory } from 'react-router-dom'
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useForm } from 'react-hook-form'
 import { v4 as uuid } from 'uuid'
-import { signUpOptions } from '../../utils/validations'
-import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
@@ -32,9 +26,6 @@ export default function NewListingStep0({props}) {
         formState: { errors },
     } = useForm({ mode: "onChange" });
 
-    const navigate = useNavigate();
-    const [serverErrors, setServerErrors] = useState([])
-
     const getLocations = async () => {
         try {
             const res = await api.get('/locations')
@@ -46,15 +37,13 @@ export default function NewListingStep0({props}) {
     const getCategories = async () => {
         try {
             const res = await api.get('/subcategories')
+            console.log("cat: ", res)
             return res
         } catch (e) {
             console.log("An error occurred retrieving the categories: ", e)
         }
     }
 
-    const resetErrors = () => {
-        serverErrors.length > 0 && setServerErrors([])
-    }
 
     const handleError = (errors) => console.log("Errors: ", errors)
 
@@ -131,12 +120,16 @@ export default function NewListingStep0({props}) {
                             label="category"
                             id="category"
                             name="category"
-                            
-                            {... register("category")}
                         >   
                             {categories.map(c => {
                                 return (
-                                <MenuItem key={c.id} value={c.id}>
+                                <MenuItem key={c.id} value={{id: c.id, props: {
+                                    prop1: c.main.prop1_name,
+                                    prop2: c.main.prop2_name,
+                                    prop3: c.main.prop3_name,
+                                    prop4: c.main.prop4_name,
+                                }
+                                }}>
                                     {c.main.name} &gt; {c.name}
                                 </MenuItem>
                                 )
