@@ -56,9 +56,9 @@ export const AuthProvider = ({children}) => {
                     const keys = Object.keys(e.response.data)
                     if (keys.length > 0) {
                         const foundErrors = keys.map((key) => {
-                            return ((key === "password" || key === "username") && key.charAt(0).toUpperCase() + key.slice(1) + ": " +e.response.data[key].toString())
+                            return e.response.data[key].toString()
                         })
-                        console.log(foundErrors)
+                        console.log("e", foundErrors)
                         setServerErrors(foundErrors)
                     }
                 }

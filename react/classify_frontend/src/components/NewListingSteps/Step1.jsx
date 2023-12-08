@@ -120,7 +120,16 @@ export default function Step1({props}) {
             </Grid>
             <Grid container justifyContent="center" flexDirection="column" mt={2} aria-label="Validation Errors">
                 {console.log(Object.keys(errors))}
-                {Object.keys(errors).map((fieldName) => { 
+                {Object.keys(errors).map((fieldName) => {
+                    if (fieldName === "props") {
+                        return Object.keys(errors['props']).map(prop => {
+                            return (
+                                <div key={uuid()} style={{alignSelf: 'center'}}>
+                                    <Typography color="red" variant="p" sx={{display: 'block'}}>{errors.props[prop].message}</Typography>
+                                </div>
+                            )
+                        })
+                    }
                     return (
                         <div key={uuid()} style={{alignSelf: 'center'}}>
                             <Typography color="red" variant="p" sx={{display: 'block'}}> {errors[fieldName].message}</Typography>

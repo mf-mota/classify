@@ -46,8 +46,8 @@ export const listingOptions = {
             message: "Engine: too long"
         },
         pattern: {
-            value: /[0-9][A-Za-zĄąĆćĘęŁłŃńÓóŚśŹźŻż\s\.'-]+$/,
-            message: "Engine: Invalid Charachters!"
+            value: /[0-9-A-Za-zĄąĆćĘęŁłŃńÓóŚśŹźŻż\s\.'-]+$/,
+            message: "Engine: Invalid charachters"
         },
      },
      Fuel: {
@@ -71,7 +71,7 @@ export const listingOptions = {
         },
         max: {
             value: 2050,
-            message: "Invalud Year",
+            message: "Invalid Year",
         },
         min: {
             value: 1900,
@@ -121,8 +121,14 @@ export const listingOptions = {
             value: true,
             message: "Area is required"
         },
-        min: 0,
-        max: 20000,
+        min: {
+            value: 0,
+            message: "Area must be >= 0"
+        },
+        max: {
+            value: 20000,
+            message: "Area must be <= 20000"
+        },
         pattern: {
             value: /^(?:[0-9]|[1-9][0-9]{1,4}|10000|20000)$/,
             message: "Area must be a whole number between 0 and 20000"
