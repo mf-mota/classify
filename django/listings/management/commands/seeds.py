@@ -32,25 +32,37 @@ class Command(BaseCommand):
                 prop1_name="Engine",
                 prop2_name="Fuel",
                 prop3_name="Year",
-                prop4_name="Mileage"
+                prop4_name="Mileage",
+                icon="https://f005.backblazeb2.com/file/cars-dealers/Default+Icons/vehiclesIcon.png"
             )
             main_cat_vehicles.save()
             main_cat_properties = models.MainCategory(
                 name="Properties",
                 prop1_name="Heating Type",
                 prop2_name="Area",
-                prop3_name="Rooms"
+                prop3_name="Rooms",
+                icon="https://cars-dealers.s3.us-east-005.backblazeb2.com/Default+Icons/PropertyIcon.png"
             )
             main_cat_properties.save()
 
+            main_cat_pets = models.MainCategory(
+                name="Pets",
+                prop1_name="Breed/ Type",
+                icon="https://cars-dealers.s3.us-east-005.backblazeb2.com/Default+Icons/animalsIcon.png"
+            )
+            main_cat_pets.save()
             #listing categories
             self.stdout.write('3) Creating Sub Categories...')
 
-            cat_cars = models.ListingCategory.objects.create(name="Cars", main_id=main_cat_vehicles.id)
+            cat_cars = models.ListingCategory.objects.create(name="Cars", 
+                                                             main_id=main_cat_vehicles.id)
             cat_cars.save()
-            cat_houses = models.ListingCategory.objects.create(name="Houses", main_id=main_cat_properties.id)
+            cat_houses = models.ListingCategory.objects.create(name="Houses", 
+                                                               main_id=main_cat_properties.id)                                         
             cat_houses.save()
-
+            cat_dogs = models.ListingCategory.objects.create(name="Dogs",
+                                                             main_id = main_cat_pets.id)
+            cat_dogs.save()
             #locations
             self.stdout.write('4) Creating Locations...')
 
@@ -165,7 +177,7 @@ class Command(BaseCommand):
                                             listing_id=active_listing_3.id).save()
 
         except Exception as error:
-            self.stderr.write(self.style.ERROR('\nError seeding the db: {error}'))
+            self.stderr.write(self.style.ERROR(f'\nError seeding the db: {error}'))
         
         else:
             self.stdout.write(self.style.SUCCESS('\nSeeding successfully completed!'))
