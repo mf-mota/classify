@@ -1,6 +1,6 @@
 from rest_framework import generics
 from rest_framework.views import APIView
-
+from django_filters import rest_framework as flt
 from listings.models import Listing, ListingLocation, ListingImage, MainCategory, ListingCategory
 from rest_framework_simplejwt.tokens import AccessToken
 from django.http import JsonResponse
@@ -17,6 +17,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from b2sdk.v1 import B2Api
 import environ
 import json
+from .filters import ListingFilter
 
 env = environ.Env()
 environ.Env.read_env()
@@ -32,19 +33,26 @@ class UpdateDeletePermission(BasePermission):
             return True
         return obj.owner == request.user
 
+
 class ActiveListingViewSet(viewsets.ViewSet, UpdateDeletePermission):
-    queryset = Listing.active_listings.all()
+    ## queryset = Listing.active_listings.all()
     permission_classes = [UpdateDeletePermission]
     authentication_classes = []
+    # filter_backends = [flt.DjangoFilterBackend]
+    filterset_class = ListingFilter
 
     def list(self, request): 
         print(request.user)
-        serializer = ListingSerializerMainPage(self.queryset, many=True)
+        filter_backends = flt.DjangoFilterBackend()
+        queryset = Listing.active_listings.all()
+        flt_queryset = filter_backends.filter_queryset(request, queryset, self)
+        serializer = ListingSerializerMainPage(flt_queryset, many=True)
+        # serializer = ListingSerializerMainPage(Listing.active_listings.all(), many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, pk): 
         try:
-            listing = self.queryset.get(pk=pk)
+            listing = Listing.active_listings.all().get(pk=pk)
         except Listing.DoesNotExist:
             return Response({"detail": "Listing not found"}, status=404)
         if request.user != listing.owner:
