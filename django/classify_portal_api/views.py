@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.permissions import BasePermission, SAFE_METHODS, IsAuthenticated
 from classify_portal_api.serializers import ListingSerializerMainPage, UserListingOverview, ListingPostSerializer, ImageSerializer
-from classify_portal_api.serializers import ListingSerializerDetails, LocationSerializer, MainCategorySerializerMain, CategorySerializer
+from classify_portal_api.serializers import ListingSerializerDetails, LocationSerializer, MainCategorySerializer, MainCategorySerializerMain, CategorySerializer
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework import status
@@ -46,6 +46,7 @@ class ActiveListingViewSet(viewsets.ViewSet, UpdateDeletePermission):
         filter_backends = flt.DjangoFilterBackend()
         queryset = Listing.active_listings.all()
         flt_queryset = filter_backends.filter_queryset(request, queryset, self)
+        print("here ", flt_queryset.query)
         serializer = ListingSerializerMainPage(flt_queryset, many=True)
         # serializer = ListingSerializerMainPage(Listing.active_listings.all(), many=True)
         return Response(serializer.data)
@@ -125,6 +126,11 @@ class ActiveListingViewSet(viewsets.ViewSet, UpdateDeletePermission):
 class MainCategoriesList(generics.ListAPIView):
     queryset = MainCategory.objects.all()
     serializer_class = MainCategorySerializerMain
+    authentication_classes = []
+
+class MainCategoriesDetailList(generics.ListAPIView):
+    queryset = MainCategory.objects.all()
+    serializer_class = MainCategorySerializer
     authentication_classes = []
 
 class LocationsList(generics.ListAPIView):

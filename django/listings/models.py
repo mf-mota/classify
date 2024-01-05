@@ -67,6 +67,11 @@ class Listing(models.Model):
 
     name = models.CharField(max_length=50)
     category = models.ForeignKey(ListingCategory, on_delete=models.PROTECT)
+    cat_text_prop_1 = models.CharField(max_length=50, null=True)
+    cat_text_prop_2 = models.CharField(max_length=50, null=True)
+    cat_num_prop_3 = models.IntegerField(null=True)
+    cat_num_prop_4 = models.IntegerField(null=True)
+
     description = models.TextField()
     IS_ACTIVE_CHOICES = [
         ('active', 'Active'),
@@ -84,8 +89,7 @@ class Listing(models.Model):
     active_listings = ActiveListings()
     draft_listings = DraftListings()
     
-    cat_spec_properties = models.JSONField(default=dict)
-
+    # cat_spec_properties = models.JSONField(default=dict)
 
     class Meta:
         ordering = ['-creation']

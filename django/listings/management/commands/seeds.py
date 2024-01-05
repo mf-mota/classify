@@ -39,8 +39,8 @@ class Command(BaseCommand):
             main_cat_properties = models.MainCategory(
                 name="Properties",
                 prop1_name="Heating Type",
-                prop2_name="Area",
-                prop3_name="Rooms",
+                prop3_name="Area",
+                prop4_name="Rooms",
                 icon="https://cars-dealers.s3.us-east-005.backblazeb2.com/Default+Icons/PropertyIcon.png"
             )
             main_cat_properties.save()
@@ -101,12 +101,16 @@ class Command(BaseCommand):
                 location_id=full_location_1.id,
                 owner_id=user_1.id,
                 view_count=34,
-                cat_spec_properties={
-                    "Engine": "1995",
-                    "Fuel": "Diesel",
-                    "Year": 2019,
-                    "Mileage": 75000,
-                }
+                cat_text_prop_1="20d",
+                cat_text_prop_2="Diesel",
+                cat_num_prop_3=2019,
+                cat_num_prop_4=75000,
+                # cat_spec_properties={
+                #     "Engine": "1995",
+                #     "Fuel": "Diesel",
+                #     "Year": 2019,
+                #     "Mileage": 75000,
+                # }
             )
             active_listing_1.save()
 
@@ -119,11 +123,14 @@ class Command(BaseCommand):
                 location_id=full_location_3.id,
                 owner_id=user_1.id,
                 view_count=10,
-                cat_spec_properties = {
-                    "Heating Type": "Heat Pump",
-                    "Area": 160,
-                    "Rooms": 4,
-                }
+                cat_text_prop_1="Heat Pump",
+                cat_num_prop_3=160,
+                cat_num_prop_4=4,
+                # cat_spec_properties = {
+                #     "Heating Type": "Heat Pump",
+                #     "Area": 160,
+                #     "Rooms": 4,
+                # }
             )
             active_listing_2.save()
 
@@ -136,11 +143,14 @@ class Command(BaseCommand):
                 location_id=short_location_1.id,
                 owner_id=user_1.id,
                 view_count=10,
-                cat_spec_properties = {
-                    "Heating Type": "No heating",
-                    "Area": 120,
-                    "Rooms": 5,
-                }
+                cat_text_prop_1="None",
+                cat_num_prop_3=120,
+                cat_num_prop_4=5,
+                # cat_spec_properties = {
+                #     "Heating Type": "No heating",
+                #     "Area": 120,
+                #     "Rooms": 5,
+                # }
             )
             active_listing_3.save()
 
@@ -152,12 +162,16 @@ class Command(BaseCommand):
                 price=40000,
                 location_id=full_location_2.id,
                 owner_id=user_2.id,
-                cat_spec_properties={
-                    "Engine": "1568",
-                    "Fuel": "Petrol",
-                    "Year": 2015,
-                    "Mileage": 125000,
-                }
+                cat_text_prop_1="1.6",
+                cat_text_prop_2="Diesel",
+                cat_num_prop_3=2015,
+                cat_num_prop_4=125000,
+                # cat_spec_properties={
+                #     "Engine": "1568",
+                #     "Fuel": "Petrol",
+                #     "Year": 2015,
+                #     "Mileage": 125000,
+                # }
             )
             draft_listing_1.save()
 

@@ -12,6 +12,7 @@ import SignIn from './components/SignIn.jsx'
 import { AuthProvider } from './context/JwtAuthContext.jsx'
 import ProtectedRoutes from './ProtectedRoutes.jsx'
 import ListingFormPage from './components/ListingFormPage.jsx'
+import SearchPage from './components/SearchPage.jsx'
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -21,6 +22,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Box className="main-container">
         <Routes className="sub-cont">
           <Route path="/" element={<App />} />
+          <Route path="/listings/q/:main" element={<SearchPage />}/>
           <Route path="/listings/:id" element={<Listing />} />
           {/* <Route path="/profile" element={<UserDashboard />} /> */}
           <Route path="/register" element={<SignUp />} />

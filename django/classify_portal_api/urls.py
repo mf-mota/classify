@@ -1,6 +1,6 @@
 from django.urls import path
 # from .views import ListingsList, ListingShow
-from .views import LocationsList, UserListingsList, MainCategoriesList, SubCategoriesList, AppendImageToListing
+from .views import LocationsList, UserListingsList, MainCategoriesList, MainCategoriesDetailList, SubCategoriesList, AppendImageToListing
 from .views import upload_to_backblaze
 from .views import ActiveListingViewSet
 from rest_framework.routers import DefaultRouter
@@ -25,6 +25,7 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/validate/', TokenVerifyView.as_view(), name='validate_token'),
     path("categories/", MainCategoriesList.as_view(), name="main_categories_list"),
+    path("maincat-details", MainCategoriesDetailList.as_view(), name="main_categories_details_list"),
     path("subcategories/", SubCategoriesList.as_view(), name="subcategories_list"),
     path("locations/", LocationsList.as_view(), name="locations_list"),
     path('upload_listing_images/', upload_to_backblaze, name='upload_imgs'),
