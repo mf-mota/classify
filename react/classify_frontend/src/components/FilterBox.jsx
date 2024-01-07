@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useForm } from 'react-hook-form'
 import { v4 as uuid } from 'uuid'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -21,8 +21,11 @@ import { FormControl } from '@mui/material';
 import SelectR from 'react-select';
 
 
-export default function FilterBox() {
+export default function FilterBox({params}) {
+    const {searchParams, setSearchParams} = params;
     const [locations, setLocations] = useState([])
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [categories, setCategories] = useState([])
     const [filters, setFilters] = useState([])
     const [selectedLocation, setSelectedLocation] = useState(null);
     const {
@@ -42,8 +45,9 @@ export default function FilterBox() {
         }
     }
     const handleFilter = () => {
-        console.log()
-        console.log(watchFields, selectedLocation)
+        setSearchParams({...watchFields, location: selectedLocation.value})
+        console.log("params", searchParams)
+        console.log(watchFields, selectedLocation.value)
         // setFilters(filters => ({...filters, ...data}))
         // console.log(...filters, ...data)
     }
@@ -52,50 +56,58 @@ export default function FilterBox() {
     }
     const groupLocations = async () => {
         try {
-            const locs = await getLocations();
-            const locArray = locs.data;
-    
-            // Sort locations by state and city
-            locArray.sort((a, b) => {
-                const compareState = a.state.localeCompare(b.state);
-                if (compareState !== 0) return compareState;
-                return a.city.localeCompare(b.city);
-            });
-    
-            // Group locations by state
-            const groupedLocs = locArray.reduce((acc, location) => {
-                const existingGroup = acc.find((group) => group.label === location.state);
-    
-                if (existingGroup) {
-                    existingGroup.options.push({
-                        label: `${location.district ? location.district + ', ' : ''}${location.city}`,
-                        value: location.id,
-                    });
-                } else {
-                    acc.push({
-                        label: location.state,
-                        options: [
-                            {
-                                label: `${location.district ? location.district + ', ' : ''}${location.city}`,
-                                value: location.id,
-                            },
-                        ],
-                    });
-                }
-    
-                return acc;
-            }, []);
-    
-            setLocations(groupedLocs);
-            return groupedLocs;
-        } catch (e) {
-            console.log("An error occurred while grouping the locations: ", e);
+          const locs = await getLocations();
+          const locArray = locs.data;
+      
+          // Sort locations by state and city
+          locArray.sort((a, b) => {
+            const compareState = a.state.localeCompare(b.state);
+            if (compareState !== 0) return compareState;
+            return a.city.localeCompare(b.city);
+          });
+      
+          // Group locations by state
+          const groupedLocs = locArray.reduce((acc, location) => {
+            const existingGroup = acc.find((group) => group.label === location.state);
+      
+            if (existingGroup) {
+              existingGroup.options.push({
+                label: `${location.district ? location.district + ', ' : ''}${location.city}`,
+                value: location.id,
+              });
+            } else {
+              acc.push({
+                label: location.state,
+                options: [
+                  {
+                    label: `${location.district ? location.district + ', ' : ''}${location.city}`,
+                    value: location.id,
+                  },
+                ],
+              });
+            }
+      
+            return acc;
+          }, []);
+      
+          // Add a group on top with "All" and an empty string value
+          groupedLocs.unshift({
+            label: "All",
+            options: [{ label: "Any (Poland)", value: "" }],
+          });
+      
+          return groupedLocs;
+        } catch (error) {
+          console.error("Error while grouping locations:", error);
+          return [];
         }
-    };
-    
+      };
 
     useEffect(() => {
         groupLocations().then(l => setLocations(l))
+        setSelectedLocation({
+        label: "Location", value: "" },
+          );
     }, [])
 
     useEffect(() => {
@@ -103,20 +115,21 @@ export default function FilterBox() {
     }, [watchFields])
 
     return (
-        <Container component="main" sx={{width: '100%'}}>
+        <Container component="main" sx={{width: '100%', mt: 0}}>
         <CssBaseline />
         <Box
             sx={{
-            marginTop: 8,
+            marginTop: 0,
+            marginBottom: 0,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             }}
         >
-            <Box component="form" noValidate sx={{ mt: 6, minWidth: '40vw', minHeight: '50vh'}}>
+            <Box component="form" noValidate sx={{ mt: 3, mb: 3, minWidth: '40vw'}}>
                 <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <FormControl fullWidth {...register("location")}>
+                    <FormControl fullWidth>
                         <SelectR
                             fullWidth
                             label="location"
@@ -127,7 +140,44 @@ export default function FilterBox() {
                             value={selectedLocation}
                             onBlur={handleFilter}  // This will trigger the filter on blur
 
-                            onChange={(selectedOption) => setSelectedLocation(selectedOption)}
+                            onChange={(selectedOption) => {
+                                setSelectedLocation(selectedOption);
+                                handleFilter();
+                            }
+                            }
+                            styles={{
+                                control: (provided, state) => ({
+                                    ...provided,
+                                    backgroundColor: '#00000000',
+                                    height: '100%',
+                                    width: '100%',
+
+                                }),
+                            }}
+
+
+                        >   
+
+                        </SelectR>
+                    </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                    <FormControl fullWidth>
+                        <SelectR
+                            fullWidth
+                            label="category"
+                            id="category"
+                            name="category"
+                            placeholder="Category"
+                            options={locations}
+                            value={selectedLocation}
+                            onBlur={handleFilter}  // This will trigger the filter on blur
+
+                            onChange={(selectedOption) => {
+                                setSelectedLocation(selectedOption);
+                                handleFilter();
+                            }
+                            }
                             styles={{
                                 control: (provided, state) => ({
                                     ...provided,
@@ -152,7 +202,7 @@ export default function FilterBox() {
                         sx={{zIndex: 0}}
                         {...register("title",
                         )}
-                        onChange={handleFilter}
+                        onBlur={handleFilter}
                     />
                 </Grid>
                 <Grid item xs={3}>
@@ -161,11 +211,11 @@ export default function FilterBox() {
                         id="price"
                         label="Price from"
                         name="price"
-                        {...register("price-from",  
+                        {...register("min_price",  
                         )}
                         
                         sx={{zIndex: 0}}
-                        onChange={handleFilter}
+                        onBlur={handleFilter}
                     />
                 </Grid>
                 <Grid item xs={3}>
@@ -175,9 +225,9 @@ export default function FilterBox() {
                         label="Price to"
                         name="price"
                         sx={{zIndex: 0}}
-                        {...register("price-to",  
+                        {...register("max_price",  
                         )}
-                        onChange={handleFilter}
+                        onBlur={handleFilter}
                     />
                 </Grid>
                 </Grid>

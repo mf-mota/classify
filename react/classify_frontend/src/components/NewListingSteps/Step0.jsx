@@ -16,8 +16,6 @@ import { FormControl } from '@mui/material';
 
 
 
-
-
 export default function NewListingStep0({props}) {
     const {locations, setLocations, categories, setCategories, setStep, setListing} = props
     const {

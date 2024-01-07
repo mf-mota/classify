@@ -11,8 +11,9 @@ class ListingFilter(flt.FilterSet):
     ct4_min = flt.NumberFilter(field_name="cat_text_prop_4", lookup_expr="gte")
     ct4_max = flt.NumberFilter(field_name="cat_text_prop_4", lookup_expr="lte")
     main_cat = flt.NumberFilter(field_name="category__main__id")
+    # do location as well
     class Meta:
         model = Listing
         fields = [
-            'price', 'cat_text_prop_1', 'cat_text_prop_2', 'main_cat'
+            'price', 'cat_text_prop_1', 'cat_text_prop_2', 'main_cat', 'location'
         ]

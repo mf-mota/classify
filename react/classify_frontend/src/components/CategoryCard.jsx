@@ -16,7 +16,7 @@ export default function CategoryCard({category}) {
   console.log("category: ", category)
   return (
     <Card sx={{ maxWidth: {xs: '50%', md: '33%', lg: '25%'}, maxHeight: {xs: '50px', md: '150px'}, border: '3px solid white', boxSizing: 'border-box', mt: '-2.7px'}}>
-    <Link underline='none' component={RouterLink} to={`/listings/`}  // TODO: change to Search
+    <Link underline='none' component={RouterLink} to={`/listings/cat/${category.id}/q`}  // TODO: change to Search
     sx={{ display: 'flex', color: 'inherit', textDecoration: 'none', '&:hover': {
       color: 'inherit', textDecoration: 'none',
     } }}>

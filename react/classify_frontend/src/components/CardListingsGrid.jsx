@@ -3,17 +3,24 @@ import { useState, useEffect } from 'react'
 import { Box } from '@mui/material'
 import ListingCard from './ListingCard'
 
-export default function CardListingsGrid () {
+export default function CardListingsGrid ({details}) {
     const [listings, setListings] = useState([])
     const api = usePrivApi()
     useEffect(() => {
         const getListings = async () => {
             try {
-                console.log("Headers")
-                const res = await api.get('/listings');
-                console.log(res)
-                if (res && res.data) setListings(res.data);
-                console.log(res.data)
+                if (!details) {
+                    console.log("Headers")
+                    const res = await api.get('/listings');
+                    console.log(res)
+                    if (res && res.data) setListings(res.data);
+                    console.log(res.data)
+                } else {
+                    const query = [...details]
+                    console.log(query)
+                }
+                
+
             } catch (e) {
                 console.log("An error occurred while retrieving the data", e);
             }
