@@ -17,14 +17,15 @@ export default function SearchPage() {
     const [searchParams, setSearchParams] = useState({})
     console.log(main)
     return (
+        
         <Box component="main" >
-            <SeachBar />
+            <SeachBar props={{setSearchParams}}/>
             <hr />
             <Typography gutterBottom component="div" sx={{whiteSpace: 'nowrap', fontWeight: 'bold', fontSize: { xs: '1rem', sm: '1.2rem', md: '1.4rem' }}}>
                 Filters
           </Typography>
           <hr />
-            <FilterBox params={{searchParams, setSearchParams}}/>
+            <FilterBox params={{searchParams, setSearchParams, main}}/>
             <hr />
             <Typography gutterBottom component="div" sx={{whiteSpace: 'nowrap', fontWeight: 'bold', fontSize: { xs: '1rem', sm: '1.2rem', md: '1.4rem' }}}>
                 Results

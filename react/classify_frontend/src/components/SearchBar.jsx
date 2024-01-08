@@ -4,6 +4,7 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import { Button } from '@mui/material';
 import {Box} from '@mui/material';
+import { useState } from 'react';
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -51,7 +52,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function SeachBar() {
+export default function SearchBar({props}) {
+  const {setSearchParams} = props;
+  const [term, setTerm] = useState("");
+  const handleSearch = () => {
+    setSearchParams((oldParams) => ({...oldParams, q: term }))
+  }
   return (
           <Search>
             <SearchIconWrapper>
@@ -62,8 +68,10 @@ export default function SeachBar() {
                 placeholder="Search…"
                 inputProps={{ 'aria-label': 'search' }}
                 sx={{display: 'inline-block', width: '100%'}}
+                onChange={(e) => setTerm(e.target.value)}
                 />
-                <Button sx={{backgroundColor: '#232D3F', color: 'white', mr: '1rem', my: 'auto', '&:hover': {backgroundColor: 'white', color: "#232D3F", alignSelf: 'right'}}}>Search</Button>
+                
+                <Button onClick={handleSearch}sx={{backgroundColor: '#232D3F', color: 'white', mr: '1rem', my: 'auto', '&:hover': {backgroundColor: 'white', color: "#232D3F", alignSelf: 'right'}}}>Search</Button>
             </Box>
           </Search>
   );

@@ -19,10 +19,12 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { FormControl } from '@mui/material';
 import SelectR from 'react-select';
+import {groupLocations} from '../utils/getGroupedLocs'
+import React from 'react'
 
 
 export default function FilterBox({params}) {
-    const {searchParams, setSearchParams} = params;
+    const {searchParams, setSearchParams, main} = params;
     const [locations, setLocations] = useState([])
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [categories, setCategories] = useState([])
@@ -35,80 +37,54 @@ export default function FilterBox({params}) {
     } = useForm({ mode: "onChange" });
     const watchFields = watch();
     const handleError = (errors) => console.log("Errors: ", errors)
-    const getLocations = async () => {
-        try {
-            const res = await api.get('/locations')
-            console.log(res.data)
-            return res
-        } catch (e) {
-            console.log("An error occurred retrieving the locations: ", e)
-        }
-    }
     const handleFilter = () => {
-        setSearchParams({...watchFields, location: selectedLocation.value})
-        console.log("params", searchParams)
-        console.log(watchFields, selectedLocation.value)
-        // setFilters(filters => ({...filters, ...data}))
-        // console.log(...filters, ...data)
+        setSearchParams((prevParams) => ({...prevParams, ...watchFields, 
+            location: selectedLocation.value, 
+            category: selectedCategory.value}))
     }
-    const getCatProps = () => {
-        api.get('/')
-    }
-    const groupLocations = async () => {
+    const getCatProps = async () => {
+        console.log("main", main)
         try {
-          const locs = await getLocations();
-          const locArray = locs.data;
-      
-          // Sort locations by state and city
-          locArray.sort((a, b) => {
-            const compareState = a.state.localeCompare(b.state);
-            if (compareState !== 0) return compareState;
-            return a.city.localeCompare(b.city);
-          });
-      
-          // Group locations by state
-          const groupedLocs = locArray.reduce((acc, location) => {
-            const existingGroup = acc.find((group) => group.label === location.state);
-      
-            if (existingGroup) {
-              existingGroup.options.push({
-                label: `${location.district ? location.district + ', ' : ''}${location.city}`,
-                value: location.id,
-              });
-            } else {
-              acc.push({
-                label: location.state,
-                options: [
-                  {
-                    label: `${location.district ? location.district + ', ' : ''}${location.city}`,
-                    value: location.id,
-                  },
-                ],
-              });
-            }
-      
-            return acc;
-          }, []);
-      
-          // Add a group on top with "All" and an empty string value
-          groupedLocs.unshift({
-            label: "All",
-            options: [{ label: "Any (Poland)", value: "" }],
-          });
-      
-          return groupedLocs;
-        } catch (error) {
-          console.error("Error while grouping locations:", error);
-          return [];
+            const res = await api.get(`/subcategories/${main ? "?main_cat="+main : ""}`)
+            const categories_data = [{value: "", label: "All Subcategories"}]
+            res.data.map(el => {
+                return categories_data.push({value: el.id, label: el.name})
+            })
+            setCategories(categories_data)
+        } catch (e) {
+            console.log("An error occurred while retrieve the subcategories. ", e)
         }
-      };
 
+    }
+    const getCatSpecFilters = async () => {
+        try {
+            const res = await api.get(`/maincat-details${main ? "?id="+main : ""}`)
+            setFilters(res.data)
+            console.log("filters", res.data)
+            
+        } catch (e) {
+            console.error("Could get category specific filter info... ", e)
+        }
+    }
     useEffect(() => {
-        groupLocations().then(l => setLocations(l))
-        setSelectedLocation({
-        label: "Location", value: "" },
-          );
-    }, [])
+        const fetchData = async () => {
+          try {
+            const locs = await groupLocations();
+            setLocations(locs);
+            setSelectedLocation({
+                label: "Location", value: "" },
+                  );
+            setSelectedCategory({
+                label: "Subcategories", value: ""
+            })
+          } catch (error) {
+            console.error('Error fetching locations:', error);
+          }
+        };
+        fetchData();
+        getCatProps();
+        getCatSpecFilters();
+    }, []);
 
     useEffect(() => {
         handleSubmit(handleFilter)
@@ -128,20 +104,20 @@ export default function FilterBox({params}) {
         >
             <Box component="form" noValidate sx={{ mt: 3, mb: 3, minWidth: '40vw'}}>
                 <Grid container spacing={2}>
-                <Grid item xs={12}>
+                <Grid item xs={6}>
                     <FormControl fullWidth>
                         <SelectR
                             fullWidth
-                            label="location"
-                            id="location"
-                            name="location"
-                            placeholder="Location"
-                            options={locations}
-                            value={selectedLocation}
+                            label="category"
+                            id="category"
+                            name="category"
+                            placeholder="Subcategory"
+                            options={categories}
+                            value={selectedCategory}
                             onBlur={handleFilter}  // This will trigger the filter on blur
 
                             onChange={(selectedOption) => {
-                                setSelectedLocation(selectedOption);
+                                setSelectedCategory(selectedOption);
                                 handleFilter();
                             }
                             }
@@ -156,12 +132,11 @@ export default function FilterBox({params}) {
                             }}
 
 
-                        >   
-
+                        >
                         </SelectR>
                     </FormControl>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={6}>
                     <FormControl fullWidth>
                         <SelectR
                             fullWidth
@@ -187,25 +162,22 @@ export default function FilterBox({params}) {
 
                                 }),
                             }}
-
-
                         >   
-
                         </SelectR>
                     </FormControl>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={4}>
                     <TextField
                         id="title"
                         label="Title"
                         name="name"
-                        sx={{zIndex: 0}}
+                        sx={{zIndex: 0, width: '100%'}}
                         {...register("title",
                         )}
                         onBlur={handleFilter}
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={4}>
                     <TextField
                         type="number"
                         id="price"
@@ -214,26 +186,84 @@ export default function FilterBox({params}) {
                         {...register("min_price",  
                         )}
                         
-                        sx={{zIndex: 0}}
+                        sx={{zIndex: 0, width: '100%'}}
                         onBlur={handleFilter}
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={4}>
                     <TextField
                         type="number"
                         id="price"
                         label="Price to"
                         name="price"
-                        sx={{zIndex: 0}}
+                        sx={{zIndex: 0, width: '100%'}}
                         {...register("max_price",  
                         )}
                         onBlur={handleFilter}
                     />
                 </Grid>
+                {filters.map(obj => {
+                    console.log(Object.keys(obj))
+                    return Object.keys(obj).map(key => {
+                        if ((key.startsWith("prop1") || key.startsWith("prop2")) && obj[key] !== "")  {
+                            console.log("key", obj[key])
+                            return (
+                                <Grid item xs={4} key={key}>
+                                    <TextField
+                                        type="text"
+                                        id={obj[key]}
+                                        label={obj[key]}
+                                        placeholder={obj[key]}
+                                        name={obj[key]}
+                                        sx={{zIndex: 0, width: '100%'}}
+                                        {...register(`ct${key[4]}`,  
+                                        )}
+                                        onBlur={handleFilter}
+                                />
+                                </Grid>
+                            )
+                        }
+                        else if ((key.startsWith("prop3") || key.startsWith("prop4")) && obj[key] !== "")
+                        {
+                            return (
+                                <React.Fragment key={key}>
+                                <CssBaseline />
+                                <Grid item xs={4}>
+                                    <TextField
+                                        type="number"
+                                        id={obj[key]+"_from"}
+                                        label={"Min "+obj[key]}
+                                        name={obj[key]+"_from"}
+                                        sx={{zIndex: 0, width: '100%'}}
+                                        {...register(`ct${key[4]}_min`,  
+                                        )}
+                                        onBlur={handleFilter}
+                                    />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField
+                                    type="number"
+                                    id={obj[key]+"_to"}
+                                    label={"Max "+obj[key]}
+                                    name={obj[key]+"_to"}
+                                    sx={{zIndex: 0, width: '100%'}}
+                                    {...register(`ct${key[4]}_max`,  
+                                    )}
+                                    onBlur={handleFilter}
+                                />
+                            </Grid>
+                            </React.Fragment>
+                            )
+                        }
+                        else {
+                            return
+                        }
+                    }
+                )
+                })}
                 </Grid>
             </Box>
         </Box>
         </Container>
-    
     );
 }

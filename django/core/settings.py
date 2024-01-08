@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'classify_portal_api',
     'user_accounts',
+    'django_filters',
     'listings',
 ]
 

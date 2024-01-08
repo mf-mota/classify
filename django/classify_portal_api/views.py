@@ -15,9 +15,12 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from b2sdk.v1 import B2Api
+from .pagination import SearchPagination
 import environ
 import json
-from .filters import ListingFilter
+from .filters import ListingFilter, CategoryFilter, MainCategoryFilter
+from rest_framework.pagination import PageNumberPagination
+from rest_framework import mixins
 
 env = environ.Env()
 environ.Env.read_env()
@@ -40,15 +43,15 @@ class ActiveListingViewSet(viewsets.ViewSet, UpdateDeletePermission):
     authentication_classes = []
     # filter_backends = [flt.DjangoFilterBackend]
     filterset_class = ListingFilter
+    pagination_class = PageNumberPagination
 
-    def list(self, request): 
+    def list(self, request):
         print(request.user)
         filter_backends = flt.DjangoFilterBackend()
         queryset = Listing.active_listings.all()
         flt_queryset = filter_backends.filter_queryset(request, queryset, self)
         print("here ", flt_queryset.query)
         serializer = ListingSerializerMainPage(flt_queryset, many=True)
-        # serializer = ListingSerializerMainPage(Listing.active_listings.all(), many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, pk): 
@@ -131,6 +134,8 @@ class MainCategoriesList(generics.ListAPIView):
 class MainCategoriesDetailList(generics.ListAPIView):
     queryset = MainCategory.objects.all()
     serializer_class = MainCategorySerializer
+    filter_backends = (flt.DjangoFilterBackend,)
+    filterset_class = MainCategoryFilter
     authentication_classes = []
 
 class LocationsList(generics.ListAPIView):
@@ -141,6 +146,8 @@ class LocationsList(generics.ListAPIView):
 class SubCategoriesList(generics.ListAPIView):
     queryset = ListingCategory.objects.all()
     serializer_class = CategorySerializer
+    filter_backends = (flt.DjangoFilterBackend,)
+    filterset_class = CategoryFilter
     authentication_classes = []
 
 class UserListingsList(generics.ListCreateAPIView):
