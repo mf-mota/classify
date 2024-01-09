@@ -13,13 +13,14 @@ import { AuthProvider } from './context/JwtAuthContext.jsx'
 import ProtectedRoutes from './ProtectedRoutes.jsx'
 import ListingFormPage from './components/ListingFormPage.jsx'
 import SearchPage from './components/SearchPage.jsx'
+import Footer from './components/layout/Footer.jsx'
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <AuthProvider>
-        <Navbar />
-        <Box className="main-container">
+        <Navbar />   
+      <Box className="main-container" sx={{minHeight: '80vh'}}>
         <Routes className="sub-cont">
           <Route path="/" element={<App />} />
           <Route path="/listings/cat/:main/q" element={<SearchPage />}/>
@@ -31,7 +32,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="new-listing" element={<ListingFormPage />}/>
         </Routes>
         </Box>
-        <Box>Here goes the footer #TODO</Box>
+        <Footer />
       </AuthProvider>
     </BrowserRouter>
 )

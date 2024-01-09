@@ -1,7 +1,6 @@
 
 import Box from '@mui/system/Box';
 import '../ListingCard.css'
-import SeachBar from './SearchBar';
 import CardListingsGrid from './CardListingsGrid'
 import ListingCategoriesGrid from './ListingCategoriesGrid';
 import { Typography } from '@mui/material';
@@ -15,7 +14,7 @@ export default function HomePage() {
     }, [user])
     return (
         <Box component="main" >
-            <SeachBar />
+            {/* <SeachBar /> */}
             <ListingCategoriesGrid />
             <hr />
             <Typography variant="h4" component="h2">Just in</Typography>

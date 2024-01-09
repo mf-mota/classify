@@ -9,16 +9,16 @@ export default function ListingCategoriesGrid () {
     const {loading, tokens} = useContext(JwtAuthContent)
     const [categories, setCategories] = useState([])
     useEffect(() => {
-        const getListings = async () => {
+        const getCategories = async () => {
             try {
                 const res = await api.get('/categories');
-                if (res && res.data) setCategories(res.data);
+                if (res && res.data) setCategories(res.data.sort((a, b) => a.id - b.id));
                 console.log(res.data)
             } catch (e) {
                 console.log("An error occurred while retrieving the categories", e);
             }
         }
-        getListings()
+        getCategories()
     }, [loading, tokens])
     if (!loading) return (
     <Box component="main" display="flex"

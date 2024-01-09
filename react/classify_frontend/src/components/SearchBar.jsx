@@ -53,10 +53,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function SearchBar({props}) {
-  const {setSearchParams} = props;
+  const {setSearchParams, setPage} = props;
   const [term, setTerm] = useState("");
   const handleSearch = () => {
     setSearchParams((oldParams) => ({...oldParams, q: term }))
+    setPage(1)
   }
   return (
           <Search>

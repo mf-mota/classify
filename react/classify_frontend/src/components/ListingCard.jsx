@@ -13,7 +13,6 @@ import {Box} from '@mui/material';
 
 
 export default function ListingCard({details}) {
-  console.log("details: ", details)
   return (
     <Card sx={{border: '2px solid #00000055', width: '20%', maxWidth: '320px', minWidth: '300px', my: 3, boxShadow: '5px 5px 5px #00000052'}}>
     <Link underline='none' component={RouterLink} to={`/listings/${details.id}`} 

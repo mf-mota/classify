@@ -13,7 +13,7 @@ export default function CardListingsGrid ({details}) {
                     console.log("Headers")
                     const res = await api.get('/listings');
                     console.log(res)
-                    if (res && res.data) setListings(res.data);
+                    if (res && res.data) setListings(res.data.results);
                     console.log(res.data)
                 } else {
                     const query = [...details]

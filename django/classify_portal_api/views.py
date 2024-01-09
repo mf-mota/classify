@@ -20,7 +20,6 @@ import environ
 import json
 from .filters import ListingFilter, CategoryFilter, MainCategoryFilter
 from rest_framework.pagination import PageNumberPagination
-from rest_framework import mixins
 
 env = environ.Env()
 environ.Env.read_env()
@@ -45,14 +44,18 @@ class ActiveListingViewSet(viewsets.ViewSet, UpdateDeletePermission):
     filterset_class = ListingFilter
     pagination_class = PageNumberPagination
 
+
     def list(self, request):
         print(request.user)
+
         filter_backends = flt.DjangoFilterBackend()
         queryset = Listing.active_listings.all()
         flt_queryset = filter_backends.filter_queryset(request, queryset, self)
+        paginator = SearchPagination()
+        result_page = paginator.paginate_queryset(flt_queryset, request)
         print("here ", flt_queryset.query)
-        serializer = ListingSerializerMainPage(flt_queryset, many=True)
-        return Response(serializer.data)
+        serializer = ListingSerializerMainPage(result_page, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
     def retrieve(self, request, pk): 
         try:

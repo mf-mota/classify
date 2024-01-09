@@ -48,10 +48,12 @@ export default function Navbar() {
   };
 
   return (
-    <AppBar position="static" sx={{
+    <AppBar position="relative" sx={{
         width: '100%',
         backgroundColor: '#232D3F',
-        marginBottom: 6,
+        marginBottom: '5vh',
+        zIndex: 1000,
+        minHeight: '5vh'
     }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>

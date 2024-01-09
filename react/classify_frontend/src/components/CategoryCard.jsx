@@ -13,7 +13,6 @@ import {Box} from '@mui/material';
 
 
 export default function CategoryCard({category}) {
-  console.log("category: ", category)
   return (
     <Card sx={{ maxWidth: {xs: '50%', md: '33%', lg: '25%'}, maxHeight: {xs: '50px', md: '150px'}, border: '3px solid white', boxSizing: 'border-box', mt: '-2.7px'}}>
     <Link underline='none' component={RouterLink} to={`/listings/cat/${category.id}/q`}  // TODO: change to Search
@@ -32,18 +31,6 @@ export default function CategoryCard({category}) {
             {category.name}
           </Typography>
         </Box>
-          {/* <hr />
-          <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
-          <Typography variant="body3" color="text.secondary">
-            PLN <strong>{details.price.toLocaleString("pl-pl")}</strong>
-          </Typography>
-          <Box sx={{display: 'flex'}}>
-          <LocationOnIcon color="primary" sx={{maxHeight: '100%', justifySelf: "flex-end"}} />
-          <Typography variant="body4" color="text.secondary" sx={{justifySelf: "flex-end"}}>
-            {details.location.city}
-          </Typography>
-          </Box>
-          </Box> */}
         </CardContent>
         </Link>
     </Card>

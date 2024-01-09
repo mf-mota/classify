@@ -24,7 +24,7 @@ import React from 'react'
 
 
 export default function FilterBox({params}) {
-    const {searchParams, setSearchParams, main} = params;
+    const {searchParams, setSearchParams, main, showFilters} = params;
     const [locations, setLocations] = useState([])
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [categories, setCategories] = useState([])
@@ -34,6 +34,7 @@ export default function FilterBox({params}) {
         register,
         handleSubmit,
         watch,
+        reset,
     } = useForm({ mode: "onChange" });
     const watchFields = watch();
     const handleError = (errors) => console.log("Errors: ", errors)
@@ -66,6 +67,10 @@ export default function FilterBox({params}) {
             console.error("Could get category specific filter info... ", e)
         }
     }
+
+    useEffect(() => {
+        reset()
+    }, [main])
     useEffect(() => {
         const fetchData = async () => {
           try {
@@ -84,14 +89,14 @@ export default function FilterBox({params}) {
         fetchData();
         getCatProps();
         getCatSpecFilters();
-    }, []);
+    }, [main]);
 
     useEffect(() => {
         handleSubmit(handleFilter)
-    }, [watchFields])
+    }, [watchFields, main])
 
     return (
-        <Container component="main" sx={{width: '100%', mt: 0}}>
+        <Container component="main" sx={{width: '100%', mt: 0, display: !showFilters ? 'none' : ''}}>
         <CssBaseline />
         <Box
             sx={{
@@ -104,7 +109,7 @@ export default function FilterBox({params}) {
         >
             <Box component="form" noValidate sx={{ mt: 3, mb: 3, minWidth: '40vw'}}>
                 <Grid container spacing={2}>
-                <Grid item xs={6}>
+                <Grid item xs={12} md={6}>
                     <FormControl fullWidth>
                         <SelectR
                             fullWidth
@@ -136,7 +141,7 @@ export default function FilterBox({params}) {
                         </SelectR>
                     </FormControl>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12} md={6}>
                     <FormControl fullWidth>
                         <SelectR
                             fullWidth
@@ -166,18 +171,7 @@ export default function FilterBox({params}) {
                         </SelectR>
                     </FormControl>
                 </Grid>
-                <Grid item xs={4}>
-                    <TextField
-                        id="title"
-                        label="Title"
-                        name="name"
-                        sx={{zIndex: 0, width: '100%'}}
-                        {...register("title",
-                        )}
-                        onBlur={handleFilter}
-                    />
-                </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={6} md={4}>
                     <TextField
                         type="number"
                         id="price"
@@ -190,7 +184,7 @@ export default function FilterBox({params}) {
                         onBlur={handleFilter}
                     />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={6} md={4}>
                     <TextField
                         type="number"
                         id="price"
@@ -208,7 +202,7 @@ export default function FilterBox({params}) {
                         if ((key.startsWith("prop1") || key.startsWith("prop2")) && obj[key] !== "")  {
                             console.log("key", obj[key])
                             return (
-                                <Grid item xs={4} key={key}>
+                                <Grid item xs={6} md={4} key={key}>
                                     <TextField
                                         type="text"
                                         id={obj[key]}
@@ -228,7 +222,7 @@ export default function FilterBox({params}) {
                             return (
                                 <React.Fragment key={key}>
                                 <CssBaseline />
-                                <Grid item xs={4}>
+                                <Grid item xs={6} md={4}>
                                     <TextField
                                         type="number"
                                         id={obj[key]+"_from"}
@@ -240,7 +234,7 @@ export default function FilterBox({params}) {
                                         onBlur={handleFilter}
                                     />
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={6} md={4}>
                                 <TextField
                                     type="number"
                                     id={obj[key]+"_to"}
