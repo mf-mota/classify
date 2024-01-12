@@ -30,24 +30,21 @@ environ.Env.read_env()
 
 class UpdateDeletePermission(BasePermission):
     message = "You are not the owner of this listing"
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request, obj):
         if request.method in SAFE_METHODS:
             return True
         return obj.owner == request.user
 
 
-class ActiveListingViewSet(viewsets.ViewSet, UpdateDeletePermission):
-    ## queryset = Listing.active_listings.all()
+class ActiveListingViewSet(viewsets.ModelViewSet, UpdateDeletePermission):
     permission_classes = [UpdateDeletePermission]
     authentication_classes = []
     # filter_backends = [flt.DjangoFilterBackend]
     filterset_class = ListingFilter
     pagination_class = PageNumberPagination
 
-
     def list(self, request):
         print(request.user)
-
         filter_backends = flt.DjangoFilterBackend()
         queryset = Listing.active_listings.all()
         flt_queryset = filter_backends.filter_queryset(request, queryset, self)
@@ -62,10 +59,29 @@ class ActiveListingViewSet(viewsets.ViewSet, UpdateDeletePermission):
             listing = Listing.active_listings.all().get(pk=pk)
         except Listing.DoesNotExist:
             return Response({"detail": "Listing not found"}, status=404)
-        if request.user != listing.owner:
-            listing.inc_view_count()
+        print("request user", request.user)
+        listing.inc_view_count()
         serializer = ListingSerializerDetails(listing)
         return Response(serializer.data)
+    
+    def partial_update(self, request, pk):
+        print("request made by: ", request.user)
+        try: 
+            listing = Listing.active_listings.all().get(pk=pk)
+        except Listing.DoesNotExist:
+            return Response({"detail": "Listing not found"}, status=404)
+        serializer = ListingPostSerializer(instance=listing, data=request.data, partial=True)
+        if not self.has_object_permission(request=request, obj=listing):
+            return Response({"detail": "You are not the owner of the listing. Permission denied"}, 
+                            status=status.HTTP_401_UNAUTHORIZED)
+        if serializer.is_valid():
+            listing = serializer.save()
+            data = {
+                'id': listing.id,
+                'message': 'Updated Successfully'
+            }
+            return Response(data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk):
         print(request.user.username)
@@ -78,12 +94,13 @@ class ActiveListingViewSet(viewsets.ViewSet, UpdateDeletePermission):
         except Listing.DoesNotExist:
             return Response({"detail": "Listing not found"}, status=404)
         else:
-            if listing.owner.id == request.user.id:
+            if self.has_object_permission(request=request, obj=listing):
                 listing.delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)
             return Response(status=status.HTTP_401_UNAUTHORIZED)
     
     def create(self, request):
+        print("req data", request)
         print(request)
         print("user: ", request.user)
         if not request.user.is_authenticated:
@@ -101,13 +118,12 @@ class ActiveListingViewSet(viewsets.ViewSet, UpdateDeletePermission):
 
 
     def get_permissions(self):
-        print("permission ran", self.request.method == 'DELETE')
-        if self.request.method == 'DELETE':
+        if self.request.method in ('DELETE', 'PATCH', 'PUT') :
             return [UpdateDeletePermission()]
         return []
     
     def get_authenticators(self):
-        if self.request.method in ('DELETE', 'POST') :
+        if self.request.method in ('DELETE', 'POST', 'PATCH', 'PUT') :
             return [JWTAuthentication()]
         return []
     
@@ -176,6 +192,25 @@ class AppendImageToListing(generics.CreateAPIView):
             else:
                 return Response({'message': 'Serialization went wrong'}, status=status.HTTP_400_BAD_REQUEST)
         return Response({'message': "OK"}, status=status.HTTP_201_CREATED)
+    
+class RemoveImageFromListing(generics.DestroyAPIView):
+    queryset = ListingImage.objects.all()
+    serializer_class = ImageSerializer
+
+    def destroy(self, request, pk):
+        if not request.user.is_authenticated:
+            return Response({"detail": "Authentication required"}, status=401)
+        try: 
+            image = self.queryset.get(pk=pk)
+            print("image", image)
+        except ListingImage.DoesNotExist:
+            return Response({"detail": "Image not found"}, status=404)
+        else:
+            if image.listing.owner.id == request.user.id:
+                image.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
 
 # image upload using Backblaze, example of function view
 @csrf_exempt
@@ -195,6 +230,7 @@ def upload_to_backblaze(request):
         # Upload each image to Backblaze B2
         file_info = bucket.upload_bytes(image.read(), file_name=image.name)
         print("id:", file_info.as_dict()['fileId'])
+        print("file: ", file_info.as_dict())
         download_urls.append(b2.get_download_url_for_fileid(file_info.as_dict()['fileId']))
         # Generate the download URL for the uploaded file
 

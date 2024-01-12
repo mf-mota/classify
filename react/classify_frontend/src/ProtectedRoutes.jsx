@@ -5,6 +5,8 @@ import UserDashboard from "./components/UserDashboard"
 import JwtAuthContext from './context/JwtAuthContext'
 import { Navigate } from "react-router-dom"
 import { useEffect, useState } from "react"
+import ListingFormPage from "./components/ListingFormPage"
+import ErrorPage from "./ErrorPage"
 
 
 export default function ProtectedRoutes () {
@@ -24,15 +26,12 @@ export default function ProtectedRoutes () {
         return <p>Loading...</p>;
     }
 
-    else if (!isLoggedIn) return (
-        <Routes>
-            <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-    )
-    else return (
+    else if (isLoggedIn) return (
         <Routes>
             <Route path="/profile" element={<UserDashboard />} />
+            <Route path="/new-listing" element={<ListingFormPage mode="new"/>}/>
+            <Route path="/edit-listing/:listingId" element={<ListingFormPage mode="edit"/>}/>
+            <Route path="*" element={<ErrorPage message={"404. Ooops... This page does not exist."}/>} />
         </Routes>
     )
-
 }

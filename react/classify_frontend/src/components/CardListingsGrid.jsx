@@ -1,11 +1,11 @@
 import usePrivApi from '../utils/hooks/usePrivApi'
+import api from '../api/apiConn'
 import { useState, useEffect } from 'react'
 import { Box } from '@mui/material'
 import ListingCard from './ListingCard'
 
 export default function CardListingsGrid ({details}) {
     const [listings, setListings] = useState([])
-    const api = usePrivApi()
     useEffect(() => {
         const getListings = async () => {
             try {

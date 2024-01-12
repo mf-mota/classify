@@ -6,10 +6,12 @@ import api from './api/apiConn'
 import ListingOwnerCard from "./components/ListingOwnerCard";
 import ListingDetailPrice from './ListingDetailPrice'
 import ListingDetailDesc from "./components/ListingDetailDesc";
+import ErrorPage from "./ErrorPage";
 
 export default function Listing() {
     const {id} = useParams()
     const [listing, setListing] = useState([])
+    const [apiError, setApiError] = useState({state: false, message: ""})
 
     const listings_props = listing.main_category ? Object.keys(listing.main_category)
         .filter(value => value.startsWith("prop")).map(v => {
@@ -25,19 +27,23 @@ export default function Listing() {
         async function getListing() {
             try {
                 const res = await api.get(`/listings/${id}`);
+                console.log(res)
                 console.log(res.data);
                 if (res && res.data) {
                     setListing(res.data);
                 }
             } catch (e) {
-                console.log("An error occurred while retrieving the request classified ad", e);
+                setApiError({state: true, message: "404. It seems this page does not exist..."})
             }
         }
         getListing()
     }, [])
+    if (apiError.state) return (<ErrorPage message={apiError.message} />)
     return (
         <>
-        {console.log(listings_props)}
+        {apiError.state &&
+            <ErrorPage message={apiError.message} />
+        }
 
         <Grid container spacing={3} sx={{ flexGrow: 1 }}>
             {/* <Grid xs={12} md={8}>

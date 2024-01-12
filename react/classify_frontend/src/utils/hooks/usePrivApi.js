@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
 import { useContext } from 'react'
@@ -6,7 +7,7 @@ import AuthContext from '../../context/JwtAuthContext'
 const baseURL = "http://localhost:8000/api"
 
 export default function usePrivApi () {
-    
+    const navigate = useNavigate();
     const {tokens, setTokens, setUser} = useContext(AuthContext)
 
     const axiosPriv = axios.create({
@@ -28,6 +29,9 @@ export default function usePrivApi () {
                 console.log("Bearer" + " " + String(localStorage.getItem('access_tk')))
                 // request.headers.Authorization = "Bearer" + " " + String(localStorage.getItem('access_tk'))
             }
+            else {
+                return request
+            }
         }
     
         const user = jwtDecode(tokens.access)
@@ -35,21 +39,35 @@ export default function usePrivApi () {
         console.log((Date.now() / 1000))
         const isTokenExpired = (Date.now() / 1000) - user.exp > 0
         console.log('isTokenExpired: ', isTokenExpired)
-    
         if (!isTokenExpired) return request;
         
-        console.log("Hitting the refresh endpoint")
-        const res = await axios.post(baseURL + "/token/refresh/", {refresh: tokens.refresh})
-        if (res.data.access) {
-            console.log("Setting new access token")
-            console.log("new data:", res.data)
-            setTokens(tokens => ({...tokens, access: res.data.access}))
-            localStorage.setItem('access_tk', res.data.access)
-            console.log({...tokens, access: res.data.access})
-            setUser(jwtDecode(res.data.access))
-            request.headers.Authorization = "Bearer" + " " + res.data.access
+        if (!((Date.now() / 1000) - tokens.refresh > 0)) {
+            console.log("refresh is expired")
+            navigate('/login')
+            localStorage.removeItem('access_tk', null)
+            localStorage.removeItem('refresh_tk', null)
+            setTokens({access: null, refresh: null})
         }
-        return request
+        else {
+            try {
+                console.log("Hitting the refresh endpoint")
+                const res = await axios.post(baseURL + "/token/refresh/", {refresh: tokens.refresh})
+                if (res.data.access) {
+                    console.log("Setting new access token")
+                    console.log("new data:", res.data)
+                    setTokens(tokens => ({...tokens, access: res.data.access}))
+                    localStorage.setItem('access_tk', res.data.access)
+                    console.log({...tokens, access: res.data.access})
+                    setUser(jwtDecode(res.data.access))
+                    request.headers.Authorization = "Bearer" + " " + res.data.access
+                }
+                return request
+            } catch (e) {
+                console.log("Could not refresh token through API, Please try again later")
+            }
+
+        }
+
     })
     return axiosPriv
 }

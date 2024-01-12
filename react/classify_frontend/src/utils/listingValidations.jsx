@@ -10,7 +10,7 @@ export const listingOptions = {
             message: "Title is too short"
         },
         pattern: {
-            value: /^[A-Za-zĄąĆćĘęŁłŃńÓóŚśŹźŻż\s\'-]+$/,
+            value: /^[A-Za-zĄąĆćĘęŁłŃńÓóŚśŹźŻż\d\s\'-]+$/,
             message: "Invalid characters in the  title!"
         },
         maxLength: {
@@ -78,7 +78,7 @@ export const listingOptions = {
             message: "Year must be >= 1900",
         }
      },
-     Mileage: {
+     "Mileage [KM]": {
         required: {
             value: true,
             message: "Mileage is required"

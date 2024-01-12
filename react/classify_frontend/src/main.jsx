@@ -14,6 +14,7 @@ import ProtectedRoutes from './ProtectedRoutes.jsx'
 import ListingFormPage from './components/ListingFormPage.jsx'
 import SearchPage from './components/SearchPage.jsx'
 import Footer from './components/layout/Footer.jsx'
+import ErrorPage from './ErrorPage.jsx'
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -25,11 +26,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/" element={<App />} />
           <Route path="/listings/cat/:main/q" element={<SearchPage />}/>
           <Route path="/listings/:id" element={<Listing />} />
-          {/* <Route path="/profile" element={<UserDashboard />} /> */}
           <Route path="/register" element={<SignUp />} />
           <Route path="/login" element={<SignIn />} />
           <Route path="*" element={<ProtectedRoutes />} />
-          <Route path="new-listing" element={<ListingFormPage />}/>
         </Routes>
         </Box>
         <Footer />

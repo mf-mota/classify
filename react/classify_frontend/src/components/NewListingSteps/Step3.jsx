@@ -1,5 +1,3 @@
-import api from '../../api/apiConn'
-// import { useHistory } from 'react-router-dom'
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
@@ -8,7 +6,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useForm } from 'react-hook-form'
 import { v4 as uuid } from 'uuid'
-import { useEffect } from 'react';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
@@ -16,10 +13,8 @@ import { FormControl } from '@mui/material';
 
 
 
-
-
 export default function Step3({props}) {
-    const {setStep, setListing} = props
+    const {setStep, setListing, defVals} = props
     const {
         register,
         handleSubmit,
@@ -32,7 +27,7 @@ export default function Step3({props}) {
         setListing(listing => ({...listing, ...data}))
         errors ? setStep(step => step + 1) : null
     }
-
+    console.log(defVals)
     return (
         <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -60,7 +55,7 @@ export default function Step3({props}) {
                             label="Status"
                             id="is_active"
                             name="is_active"
-
+                            defaultValue={defVals? defVals.is_active : ""}
                         >   
                             <MenuItem value="active">
                                 Active

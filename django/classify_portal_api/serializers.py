@@ -29,7 +29,7 @@ class LocationSerializer(serializers.ModelSerializer):
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ListingImage
-        fields = ['is_main', 'listing', 'url']
+        fields = ['is_main', 'listing', 'url', 'id']
 
 class ListingSerializerMainPage(serializers.ModelSerializer):
     images = ImageSerializer(many=True, read_only=True)
@@ -75,7 +75,7 @@ class ListingSerializerDetails(serializers.ModelSerializer):
 class ListingPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Listing
-        fields = ['name', 'description', 'category', 'price', 'location', 'is_active', 'cat_spec_properties']
+        fields = ['name', 'description', 'category', 'price', 'location', 'is_active', 'cat_text_prop_1', 'cat_text_prop_2', 'cat_num_prop_3', 'cat_num_prop_4']
 
 class UserListingOverview(ListingSerializerMainPage):
     class Meta:

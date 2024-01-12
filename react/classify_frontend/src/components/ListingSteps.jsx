@@ -12,7 +12,7 @@ export default function ListingSteps({activeStep, setActiveStep}) {
   const [skipped, setSkipped] = React.useState(new Set());
 
   const isStepOptional = (step) => {
-    return step === 1;
+    return false;
   };
 
   const isStepSkipped = (step) => {

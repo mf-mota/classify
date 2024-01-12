@@ -8,10 +8,10 @@ import { useContext, useEffect } from 'react';
 import JwtAuthContent from '../context/JwtAuthContext'
 
 export default function HomePage() {
-    const {loading, tokens, user} = useContext(JwtAuthContent)
-    useEffect(() => {
-        console.log(tokens)
-    }, [user])
+    // const {loading, tokens, user} = useContext(JwtAuthContent)
+    // useEffect(() => {
+    //     console.log(tokens)
+    // }, [user])
     return (
         <Box component="main" >
             {/* <SeachBar /> */}
@@ -19,7 +19,8 @@ export default function HomePage() {
             <hr />
             <Typography variant="h4" component="h2">Just in</Typography>
             <hr />
-            {!loading && user && <CardListingsGrid />}
+            {/* {!loading && user && <CardListingsGrid />} */}
+            <CardListingsGrid />
         </Box>
          /* <Box height={20} width={20} my={4} display="flex" alignItems="center" gap={4}> */
     )

@@ -13,16 +13,18 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { FormControl } from '@mui/material';
+import { useState } from 'react';
 
 
 
 export default function NewListingStep0({props}) {
-    const {locations, setLocations, categories, setCategories, setStep, setListing} = props
+    const {locations, setLocations, categories, setCategories, setStep, setListing, loading, defVals, setLoading} = props
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm({ mode: "onChange" });
+    const [catUpdate, setCatUpdate] = useState(null)
 
     const getLocations = async () => {
         try {
@@ -32,6 +34,7 @@ export default function NewListingStep0({props}) {
             console.log("An error occurred retrieving the locations: ", e)
         }
     }
+
     const getCategories = async () => {
         try {
             const res = await api.get('/subcategories')
@@ -41,7 +44,6 @@ export default function NewListingStep0({props}) {
             console.log("An error occurred retrieving the categories: ", e)
         }
     }
-
 
     const handleError = (errors) => console.log("Errors: ", errors)
 
@@ -72,8 +74,10 @@ export default function NewListingStep0({props}) {
             setCategories(catArr)
             console.log(catArr)
         })
-    }, [])
+    }, [defVals])
 
+
+    if (loading) return <p>Loading...</p>
     return (
         <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -98,8 +102,9 @@ export default function NewListingStep0({props}) {
                             label="location"
                             id="location"
                             name="location"
-
+                            defaultValue={defVals?.location?.id || ""}
                         >   
+                        {console.log("locagtions", locations)}
                             {locations.map(l => {
                                 return (
                                 <MenuItem key={l.id} value={l.id}>
@@ -111,6 +116,7 @@ export default function NewListingStep0({props}) {
                     </FormControl>
                 </Grid>
                 <Grid item xs={12}>
+                    {defVals ? <p>Please reselect category</p> : null}
                     <FormControl fullWidth {...register("category", {required: {value: true, message: "Category required"}})}>
                     <InputLabel>Category</InputLabel>
                         <Select
@@ -118,6 +124,7 @@ export default function NewListingStep0({props}) {
                             label="category"
                             id="category"
                             name="category"
+                            defaultValue={""}
                         >   
                             {categories.map(c => {
                                 return (

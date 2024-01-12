@@ -16,16 +16,16 @@ import { useContext } from 'react';
 import JwtAuthContext from '../../context/JwtAuthContext'
 import { useNavigate } from 'react-router-dom';
 import React from 'react'
+import { Link as RouterLink } from 'react-router-dom'
+
 
 
 export default function Navbar() {
   const navigate = useNavigate()
-  const pages = ['New Classified Ad'];
+  const pages = [{name: 'New Classified Ad', url: '/new-listing'}];
   const {logout, user} = useContext(JwtAuthContext)
-  const settings = [{setting: 'Profile', url: '/profile'}, 
-  {setting: 'Account', url: ''}, 
-  {setting: 'Dashboard', url: ''}, 
-  {setting: 'Logout', onClick: logout}
+  const settings = [{type: 'page', setting: 'Profile', url: '/profile'}, 
+    {type: 'action', setting: 'Logout', onClick: logout}
   ];
 
 
@@ -40,7 +40,13 @@ export default function Navbar() {
   };
 
   const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
+    if (anchorElNav) {
+      setAnchorElNav(null);
+    }
+  
+    if (anchorElUser) {
+      setAnchorElUser(null);
+    }
   };
 
   const handleCloseUserMenu = () => {
@@ -108,8 +114,10 @@ export default function Navbar() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                  <Link component={RouterLink} to={page.url}>
+                    <Typography textAlign="center">{page.name}</Typography>
+                  </Link>
                 </MenuItem>
               ))}
             </Menu>
@@ -140,15 +148,17 @@ export default function Navbar() {
           </Typography>
           {user ? ( <React.Fragment>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'end', mr:6}}>
-            {pages.map((page) => (
-              <Button
-                key={page}
+            {pages.map((page) => {
+              return (<Button 
+                component={RouterLink} 
+                to={page.url}
+                key={page.name}
                 onClick={handleCloseNavMenu}
                 sx={{ border: '1px solid white', '&:hover': {backgroundColor: '#00BF0088', border: '1px solid white'}, my: 2, mx: 1, color: 'white', display: 'block', alignSelf: 'end' }}
               >
-                {page}
-              </Button>
-            ))}
+                {page.name}
+              </Button>)
+            })}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
@@ -174,9 +184,12 @@ export default function Navbar() {
             >
               {settings.map((s, ix) => (
                 <MenuItem key={ix} onClick={handleCloseUserMenu}>
-                  <Link to={s.url}>
-                  <Typography textAlign="center" color="black" onClick={s.onClick && s.onClick}>{s.setting}</Typography>
-                  </Link>
+                  {s.type === "page" ? (<Link component={RouterLink} to={s.url}>
+                  <Typography textAlign="center" color="black">{s.setting}</Typography>
+                  </Link>) : 
+                  <Box onClick={() => { s.onClick(); handleCloseUserMenu(); }}>
+                    {s.setting}
+                  </Box>}
                 </MenuItem>
               ))}
             </Menu>

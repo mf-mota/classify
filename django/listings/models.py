@@ -102,6 +102,6 @@ class ListingImage(models.Model):
             return super().get_queryset() .filter(is_main=True)
     is_main = models.BooleanField(default=False)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
-    url = models.CharField(max_length=200, default="SETDEFAULTIMGURL.COM")
+    url = models.CharField(max_length=200, default="https://f005.backblazeb2.com/file/cars-dealers/Template+Images/no_photo_default.jpg")
     objects = models.Manager()
     main_image = MainImage()

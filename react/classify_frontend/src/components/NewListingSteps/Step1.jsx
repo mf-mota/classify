@@ -1,33 +1,17 @@
-import api from '../../api/apiConn'
-// import { useHistory } from 'react-router-dom'
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useForm } from 'react-hook-form'
 import { v4 as uuid } from 'uuid'
-import { signUpOptions } from '../../utils/validations'
-import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import { FormControl } from '@mui/material';
 import { listingOptions } from '../../utils/listingValidations'
 
 
-
-
-
-
 export default function Step1({props}) {
-    const {listing, setStep, setListing} = props
+    const {listing, setStep, setListing, defVals} = props
     const {
         register,
         handleSubmit,
@@ -41,9 +25,7 @@ export default function Step1({props}) {
         errors ? setStep(step => step + 1) : null
     }
 
-    const getCatProps = () => {
-        api.get('/')
-    }
+    console.log(defVals)
 
     return (
         <Container component="main" maxWidth="xs">
@@ -67,9 +49,11 @@ export default function Step1({props}) {
                         fullWidth
                         id="title"
                         label="Title"
+                        defaultValue={defVals? defVals.name : ""}
                         name="name"
                         {...register("name", {...listingOptions.title, 
                         })}
+                        
                     />
                     </Grid>
                 <Grid item xs={12}>
@@ -79,6 +63,7 @@ export default function Step1({props}) {
                         type="number"
                         id="price"
                         label="Price (PLN)"
+                        defaultValue={defVals? defVals.price : ""}
                         name="price"
                         {...register("price", {...listingOptions.price, 
                         })}
@@ -93,13 +78,18 @@ export default function Step1({props}) {
                         rows={6}
                         label="Description"
                         name="description"
+                        defaultValue={defVals? defVals.description : ""}
                         {...register("description", {...listingOptions.description, 
                         })}
                     />
                 </Grid>
                 {console.log(listing, "from step1")}
                 {listing?.category ? Object.keys(listing.category.props).map((key) => {
+                    console.log("key", key)
+                    console.log("options", listing.category.props[key])
                     if (listing.category.props[key] !== "") {
+                        const propName = (key[4] > 2 ? "cat_num_" : "cat_text_") + "prop_" + key[4]
+                        console.log(propName)
                     return (
                     <Grid key={key} item xs={12}>
                         <TextField
@@ -108,7 +98,8 @@ export default function Step1({props}) {
                             id={listing.category.props[key]}
                             label={listing.category.props[key]}
                             name={listing.category.props[key]}
-                            {...register(`props.${key}`, {...listingOptions[listing.category.props[key]], 
+                            defaultValue={defVals? defVals[propName] : ""}
+                            {...register(propName, {...listingOptions[listing.category.props[key]], 
                             })}
                         />
                         </Grid>

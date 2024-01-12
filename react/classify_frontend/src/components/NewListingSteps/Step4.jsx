@@ -1,72 +1,99 @@
 import usePrivApi from '../../utils/hooks/usePrivApi';
-// import { useHistory } from 'react-router-dom'
-import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useForm } from 'react-hook-form'
 import { v4 as uuid } from 'uuid'
 import { useEffect, useState } from 'react';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import { FormControl } from '@mui/material';
 import '../../assets/styles/ListingCreation.css'
 import { Navigate } from 'react-router-dom';
 
+
 export default function Step4({props}) {
     const [loading, setLoading] = useState(true)
-    const {setStep, setListing, listing} = props
+    const {setStep, setListing, listing, defVals} = props
     const {
-        register,
-        handleSubmit,
         formState: { errors },
     } = useForm({ mode: "onChange" });
     const api = usePrivApi()
 
     useEffect(() => {
-        try {
-            const formData = new FormData();
-            formData.append('category', listing.category.id)
-            formData.append('location', listing.location)
-            formData.append('name', listing.name)
-            formData.append('price', listing.price)
-            formData.append('cat_spec_properties', listing.props)
-            formData.append('description', listing.description)
-            formData.append('is_active', listing.is_active)
-    
-            api.post('/listings/', formData).then(res => {
-                const listing_id = res.data.id
-                const images = []
-                
-                const main_image = {
-                    listing: listing_id,
-                    is_main: true,
-                    url: listing.mainImage
-                }
-                images.push(JSON.stringify(main_image))
-                listing.otherImages?.map(i => {
-                    return images.push(JSON.stringify({
-                        listing: listing_id,
-                        is_main: false,
-                        url: i
-                    }))
+        console.log("listing beginning", listing)
+        const formData = new FormData();
+        const prepareForm = (formData) => {
+            try {
+                formData.append('category', listing.category.id)
+                formData.append('location', listing.location)
+                formData.append('name', listing.name)
+                formData.append('price', listing.price)
+                Object.keys(listing).map(k => {
+                    if (k.slice(0, 4) === "cat_") {
+                        formData.append(k, listing[k])
+                    }
                 })
-                api.post('/listings/images/', images).then(res => {
-                    console.log("images res: ", res)
-                })
-                setLoading(false)
+                console.log("formData after appending props", formData)
+                formData.append('description', listing.description)
+                formData.append('is_active', listing.is_active)
 
-                
-            })
-            console.log("success")
-        } catch (e) {
-            console.log("An error occurred while sending your data: ", e)
+                console.log("formData", formData)
+            } catch (e) {
+                console.log("An error occurred while sending your data: ", e)
+            }
         }
 
-    })
+        const appendImages = async (listing_id) => {
+            const images = []
+
+            if (listing.mainImage) {
+                const main_image = {
+                listing: defVals ? defVals.id : listing_id,
+                is_main: true,
+                url: listing.mainImage
+                }
+                images.push(JSON.stringify(main_image))
+            }
+
+            listing.otherImages?.map(i => {
+                return images.push(JSON.stringify({
+                    listing: defVals ? defVals.id : listing_id,
+                    is_main: false,
+                    url: i
+                }))
+            })
+            console.log("images", images)
+            const res2 = await api.post('/listings/images/', images);
+            console.log("images res: ", res2)
+        }
+
+        const createListing = async (formData) => {
+            try {
+                const res = await api.post('/listings/', formData)
+                const listing_id = res.data.id
+                await appendImages(listing_id)
+            } 
+            catch (e) {
+                console.log("There was an error appending images to the listings. ", e)
+            }
+        }
+
+        const editListing = async (formData) => {
+            try {
+                console.log("edit...")
+                const res = await api.patch(`/listings/${defVals.id}/`, formData)
+                if (listing.otherImages || listing.mainImage) {
+                    console.log("listing has other images or main image....")
+                    await appendImages()
+                }
+            } catch (e) {
+                console.log("Could not update listing....", e)
+            }
+        }
+        prepareForm(formData);
+        defVals ? editListing(formData) : createListing(formData);
+        setLoading(false);
+        }
+    , []);
 
     return (
         <Container component="main" maxWidth="xs">
