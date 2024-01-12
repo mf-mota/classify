@@ -41,7 +41,12 @@ axiosPriv.interceptors.request.use(async request => {
     const res = await axios.post(baseURL + "/token/refresh/", {refresh: tokens.refresh})
     console.log(res.data.access)
     if (res.data.access) {
+        localStorage.setItem('access_tk', res.data.access)
         console.log("Setting new access token")
+        console.log("request b4 data change", request)
+        request.data['token'] = res.data.access
+        console.log("request after data change", request)
+
         tokens.access = res.data.access
         request.headers.Authorization = "Bearer" + " " + res.data.access
     }

@@ -2,6 +2,7 @@ import { createContext, useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode"
 import { useNavigate } from "react-router-dom";
 import apiPriv from '../api/apiPrivConn'
+import api from '../api/apiConn'
 
 const AuthContext = createContext()
 
@@ -33,7 +34,7 @@ export const AuthProvider = ({children}) => {
     }, [tokens, loading, navigate])
 
     const login = async (data, setServerErrors) => {
-        await apiPriv.post('token/', data)
+        await api.post('token/', data)
         .then((res) => {
             if (res.status === 200) {
                 localStorage.setItem('access_tk', res.data.access)
@@ -75,11 +76,15 @@ export const AuthProvider = ({children}) => {
         )
     }
 
+    const validateCall = async () => {
+        return apiPriv.post('/token/validate/', {
+            token: tokens.access
+        })
+    }
+
     const validateToken = async () => {
         try {
-            const res = await apiPriv.post('/token/validate/', {
-                token: tokens.access
-            })
+            const res = await validateCall()
             if (res.status === 200) {
                 return true
             } else {

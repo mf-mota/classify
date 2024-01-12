@@ -8,7 +8,7 @@ const baseURL = "http://localhost:8000/api"
 
 export default function usePrivApi () {
     const navigate = useNavigate();
-    const {tokens, setTokens, setUser} = useContext(AuthContext)
+    const {tokens, setTokens, setUser, isLoggingIn} = useContext(AuthContext)
 
     const axiosPriv = axios.create({
         baseURL: baseURL,
@@ -22,6 +22,10 @@ export default function usePrivApi () {
 
     axiosPriv.interceptors.request.use(async request => {
         console.log('Interceptor ran')
+        console.log(isLoggingIn)
+        if (isLoggingIn) {
+            return request
+        }
         if (!tokens.access) {
             if (localStorage.getItem('access_tk')) {
                 console.log("Setting access_tk")
@@ -41,7 +45,7 @@ export default function usePrivApi () {
         console.log('isTokenExpired: ', isTokenExpired)
         if (!isTokenExpired) return request;
         
-        if (!((Date.now() / 1000) - tokens.refresh > 0)) {
+        if (((Date.now() / 1000) - tokens.refresh > 0)) {
             console.log("refresh is expired")
             navigate('/login')
             localStorage.removeItem('access_tk', null)
