@@ -42,6 +42,8 @@ class ActiveListingViewSet(viewsets.ModelViewSet, UpdateDeletePermission):
     # filter_backends = [flt.DjangoFilterBackend]
     filterset_class = ListingFilter
     pagination_class = PageNumberPagination
+    serializer_class = ListingSerializerMainPage
+    queryset = Listing.active_listings.all()
 
     def list(self, request):
         print(request.user)
