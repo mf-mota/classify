@@ -197,10 +197,15 @@ export default function Navbar() {
           </React.Fragment>)
           : (
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'end'}}>
+              <Button onClick={() => navigate('/register')}
+                sx={{ border: '1px solid white', '&:hover': {backgroundColor: '#FFFFFF44', border: '1px solid white'}, my: 2, mx: 1, color: 'white', display: 'block', alignSelf: 'end' }}
+              >Register
+              </Button>
               <Button onClick={() => navigate('/login')}
                 sx={{ border: '1px solid white', '&:hover': {backgroundColor: '#FFFFFF44', border: '1px solid white'}, my: 2, mx: 1, color: 'white', display: 'block', alignSelf: 'end' }}
               >Login
               </Button>
+
           </Box>
           )}
         </Toolbar>
