@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
 
-const baseURL = "http://localhost:8000/api"
+const baseURL = `${import.meta.env.VITE_API_URL}/api`
 
 const tokens = {
     access: localStorage.getItem('access_tk') ? localStorage.getItem('access_tk') : null,

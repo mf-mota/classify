@@ -4,7 +4,7 @@ import { jwtDecode } from 'jwt-decode'
 import { useContext } from 'react'
 import AuthContext from '../../context/JwtAuthContext'
 
-const baseURL = "http://localhost:8000/api"
+const baseURL = `${import.meta.env.VITE_API_URL}/api`
 
 export default function usePrivApi () {
     const navigate = useNavigate();
