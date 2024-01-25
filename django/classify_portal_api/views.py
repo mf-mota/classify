@@ -1,12 +1,12 @@
 from rest_framework import generics
 from rest_framework.views import APIView
 from django_filters import rest_framework as flt
-from listings.models import Listing, ListingLocation, ListingImage, MainCategory, ListingCategory
+from listings.models import Listing, ListingLocation, ListingImage, MainCategory, ListingCategory, Report
 from rest_framework_simplejwt.tokens import AccessToken
 from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.permissions import BasePermission, SAFE_METHODS, IsAuthenticated
-from classify_portal_api.serializers import ListingSerializerMainPage, UserListingOverview, ListingPostSerializer, ImageSerializer
+from classify_portal_api.serializers import ListingSerializerMainPage, UserListingOverview, ListingPostSerializer, ImageSerializer, ReportSerializer
 from classify_portal_api.serializers import ListingSerializerDetails, LocationSerializer, MainCategorySerializer, MainCategorySerializerMain, CategorySerializer
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -132,7 +132,9 @@ class ActiveListingViewSet(viewsets.ModelViewSet, UpdateDeletePermission):
 
 
 
-
+class ReportListing(generics.CreateAPIView):
+    queryset = Report.objects.all()
+    serializer_class = ReportSerializer
 
 # class ListingsList(generics.ListCreateAPIView):
 #     queryset = Listing.active_listings.all()

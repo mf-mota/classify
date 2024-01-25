@@ -1,0 +1,48 @@
+<html>
+    <head>
+        <style>
+            .flexible {
+                width: 50%
+            }
+            .img-pk{
+                height: 45vh;
+                width: 60vh;
+                object-fit: cover;
+            }
+
+        </style>
+        <style>
+            @media only screen and (max-width:600px) {
+                .flexible {
+                    width: 100% !important;
+                }
+                .img-pk {
+                    width: 100% !important;
+                    height: 100% !important;
+                    object-fit: cover !important;
+                }
+            }
+        </style>
+    </head>
+    <body style="background-color: #EDF2F4; padding: 5%">
+        <h1 style="color: #213547">Hey! This is your Classify Update!</h1>
+        <hr />
+        <p style="font-size: 1.3rem; color: #213547">Please take a look at some top entries</p>
+
+        <br>
+        <div style="display: flex; justify-content: space-around; flex-wrap: wrap; align-items: top;">
+        {% for listing in listings %}
+            <div class="flexible"style="display: flex; flex-direction: column; align-items: center; margin-bottom: 5%;">
+                <a href="http://localhost:5173/listings/{{listing.id}}"><img class="img-pk" src="{{listing.url}}"><img></a>
+                <p style="font-size: 1.2rem;"><b>{{listing.name}}</b></p>
+                {{listing.location}}
+                <p><b>Price:</b> {{listing.price}} zł</p> 
+
+            </div>
+
+        {% endfor %}
+        </div>
+        <p>We await your visit soon, </p>
+        <p><b>Your Classify Team</b></p>
+    </body>
+</html>

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from listings.models import Listing, ListingLocation, ListingImage, User, MainCategory, ListingCategory
+from listings.models import Listing, ListingLocation, ListingImage, User, MainCategory, ListingCategory, Report
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -81,3 +81,8 @@ class UserListingOverview(ListingSerializerMainPage):
     class Meta:
         model = Listing
         fields = ['id', 'name', 'description', 'category', 'price', 'location', 'owner', 'is_active', 'view_count', 'images']
+
+class ReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Report
+        fields = ['listing']

@@ -4,6 +4,7 @@ from django.db.models.query import QuerySet #Django default user model
 from django.utils import timezone
 
 
+
 class MainCategory(models.Model):
     name = models.CharField(max_length=30, unique=True)
     def __str__(self):
@@ -49,7 +50,6 @@ class ListingLocation(models.Model):
 class Listing(models.Model):
     class ActiveListings(models.Manager):
         def get_queryset(self) -> QuerySet:
-            print(super().get_queryset())
             return super().get_queryset() .filter(is_active='active')
         
     class DraftListings(models.Manager):
@@ -105,3 +105,10 @@ class ListingImage(models.Model):
     url = models.CharField(max_length=200, default="https://f005.backblazeb2.com/file/cars-dealers/Template+Images/no_photo_default.jpg")
     objects = models.Manager()
     main_image = MainImage()
+
+class Report(models.Model):
+    time = models.DateTimeField(default=timezone.now)
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'Listing: {self.listing.id} @{self.time}'
