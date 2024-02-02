@@ -1,11 +1,11 @@
 import { useContext } from "react"
 import { AuthProvider } from "./context/JwtAuthContext"
 import { Routes, Route, useNavigate } from "react-router-dom"
-import UserDashboard from "./components/UserDashboard"
+import UserDashboard from "./components/user/UserDashboard"
 import JwtAuthContext from './context/JwtAuthContext'
 import { Navigate } from "react-router-dom"
 import { useEffect, useState } from "react"
-import ListingFormPage from "./components/ListingFormPage"
+import ListingFormPage from "./components/Listing/ListingFormPage"
 import ErrorPage from "./ErrorPage"
 
 
@@ -32,6 +32,12 @@ export default function ProtectedRoutes () {
             <Route path="/new-listing" element={<ListingFormPage mode="new"/>}/>
             <Route path="/edit-listing/:listingId" element={<ListingFormPage mode="edit"/>}/>
             <Route path="*" element={<ErrorPage message={"404. Ooops... This page does not exist."}/>} />
+        </Routes>
+    )
+    // in case the user is not logged in, show an error page
+    else return (
+        <Routes>
+        <Route path="*" element={<ErrorPage message={"404. Ooops... This page does not exist. If trying to access a page reserved for registered users, make sure you're logged in first..."}/>} />
         </Routes>
     )
 }

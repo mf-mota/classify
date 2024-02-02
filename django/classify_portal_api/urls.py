@@ -1,8 +1,8 @@
 from django.urls import path
 # from .views import ListingsList, ListingShow
 from .views import LocationsList, UserListingsList, MainCategoriesList, MainCategoriesDetailList, SubCategoriesList
-from .views import upload_to_backblaze, ReportListing, AppendImageToListing, RemoveImageFromListing
-from .views import ActiveListingViewSet
+from .views import upload_to_backblaze, ReportListing, AppendImageToListing, RemoveImageFromListing, AllListingsView
+from .views import ActiveListingViewSet, SingleUserBasicView
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -28,10 +28,12 @@ urlpatterns = [
     path("maincat-details", MainCategoriesDetailList.as_view(), name="main_categories_details_list"),
     path("subcategories/", SubCategoriesList.as_view(), name="subcategories_list"),
     path("locations/", LocationsList.as_view(), name="locations_list"),
+    path("listings_all/<int:pk>", AllListingsView.as_view(), name="all_listings_get_one"),
     path('upload_listing_images/', upload_to_backblaze, name='upload_imgs'),
     path("listings/images/", AppendImageToListing.as_view(), name='append_image'),
     path("images/<int:pk>", RemoveImageFromListing.as_view(), name='append_image'),
-    path("report/", ReportListing.as_view(), name="listing_report")
+    path("report/", ReportListing.as_view(), name="listing_report"),
+    path("users/data/<int:pk>/", SingleUserBasicView.as_view(), name="user_basic_info")
 ]
 
 router = DefaultRouter()

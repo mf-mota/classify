@@ -1,6 +1,6 @@
 import Carousel from 'react-material-ui-carousel'
 import { Paper, Button, Typography } from '@mui/material'
-import '../assets/styles/ListingCarousel.css'
+import '../../assets/styles/ListingCarousel.css'
 import {Box} from '@mui/material'
 import { useState, useEffect } from 'react'
 

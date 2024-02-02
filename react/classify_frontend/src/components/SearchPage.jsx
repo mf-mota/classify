@@ -1,22 +1,18 @@
 
 import Box from '@mui/system/Box';
-import '../ListingCard.css'
+import '../assets/styles/ListingCard.css';
 import SeachBar from './SearchBar';
-import CardListingsGrid from './CardListingsGrid'
-import ListingCategoriesGrid from './ListingCategoriesGrid';
 import { CssBaseline, Icon, Typography } from '@mui/material';
 import { useContext, useEffect } from 'react';
-import JwtAuthContent from '../context/JwtAuthContext'
-import FoundListingsGrid from './FoundListingsGrid';
+import FoundListingsGrid from './grids/FoundListingsGrid';
 import { useParams } from "react-router-dom"
-import FilterBox from './FilterBox';
+import FilterBox from './filters/FilterBox';
 import { useState } from 'react';
 import Pagination from '@mui/material/Pagination';
 import {Stack} from '@mui/material';
-import PaginationItem from '@mui/material/PaginationItem';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import SideBar from './SideBar';
+import SideBar from './layout/SideBar';
 
 import { Button } from '@mui/material';
 

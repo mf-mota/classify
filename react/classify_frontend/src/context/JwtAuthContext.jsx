@@ -19,7 +19,6 @@ export const AuthProvider = ({children}) => {
     useEffect(()=> {
 
         if(tokens.access){
-            console.log(tokens.access)
             setUser(jwtDecode(tokens.access))
             setLoading(false)
         }
@@ -27,7 +26,6 @@ export const AuthProvider = ({children}) => {
             console.log("No tokens")
             setLoading(false)
         }
-        console.log("use effect ran")
 
 
 

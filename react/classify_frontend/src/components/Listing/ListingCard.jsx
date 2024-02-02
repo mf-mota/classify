@@ -6,13 +6,24 @@ import { Button, CardActionArea, CardActions } from '@mui/material';
 import ShareIcon from '@mui/icons-material/Share';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FlagIcon from '@mui/icons-material/Flag';
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink, useLoaderData } from 'react-router-dom'
 import {Link} from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import {Box} from '@mui/material';
+import apiConn from '../../api/apiConn';
 
 
 export default function ListingCard({details}) {
+  const alertReported = async (id) => {
+    try {
+      const res = await apiConn.post('report/', {listing: id})
+      res.status == 201 && alert("Listing reported successfully!")
+    }
+    catch (e) {
+      alert("Sorry, an error occured. Please try again later!")
+    }
+
+  }
   return (
     <Card sx={{border: '2px solid #00000055', width: '20%', maxWidth: '320px', minWidth: '300px', my: 3, boxShadow: '5px 5px 5px #00000052'}}>
     <Link underline='none' component={RouterLink} to={`/listings/${details.id}`} 
@@ -53,7 +64,7 @@ export default function ListingCard({details}) {
         <Button size="small" color="primary">
           <FavoriteBorderIcon />
         </Button>
-        <Button size="small" color="primary">
+        <Button size="small" color="primary" onClick={() => alertReported(details.id)}>
           <FlagIcon />
         </Button>
       </CardActions>

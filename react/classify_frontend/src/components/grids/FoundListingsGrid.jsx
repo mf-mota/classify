@@ -1,7 +1,7 @@
-import api from '../api/apiConn'
+import api from '../../api/apiConn'
 import { useState, useEffect } from 'react'
 import { Box } from '@mui/material'
-import ListingCard from './ListingCard'
+import ListingCard from '../Listing/ListingCard'
 import { useParams } from 'react-router-dom'
 
 export default function FoundListingsGrid ({detailSearch, mainCat, setResNumber, setPrev, setNext, page}) {

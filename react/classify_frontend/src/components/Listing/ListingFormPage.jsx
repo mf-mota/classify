@@ -1,15 +1,15 @@
-import ListingSteps from "./ListingSteps";
-import Step0 from './NewListingSteps/Step0'
-import Step1 from './NewListingSteps/Step1'
-import Step2 from './NewListingSteps/Step2'
-import Step3 from './NewListingSteps/Step3'
-import Step4 from './NewListingSteps/Step4'
+import ListingSteps from "../NewListingSteps/ListingSteps";
+import Step0 from '../NewListingSteps/Step0'
+import Step1 from '../NewListingSteps/Step1'
+import Step2 from '../NewListingSteps/Step2'
+import Step3 from '../NewListingSteps/Step3'
+import Step4 from '../NewListingSteps/Step4'
 import { useParams } from "react-router-dom";
-import api from '../api/apiConn'
+import api from '../../api/apiConn'
 import { useEffect } from "react";
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import JwtAuthContext from '../context/JwtAuthContext'
+import JwtAuthContext from '../../context/JwtAuthContext'
 
 export default function ListingFormPage ({mode}) {
   const [step, setStep] = useState(0);
@@ -32,7 +32,7 @@ export default function ListingFormPage ({mode}) {
     const getListingAndPermission = async () => {
       try {
         setLoading(true)
-        const res = await api.get(`/listings/${listingId}`)
+        const res = await api.get(`/listings_all/${listingId}`)
         if (res.data.owner.id !== user.user_id) navigate('/profile')
         setDefVals(res.data)
         setLoading(false)

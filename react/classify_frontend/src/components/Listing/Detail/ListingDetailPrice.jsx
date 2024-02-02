@@ -11,7 +11,8 @@ import {Link} from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import {Box} from '@mui/material';
 import {Avatar} from '@mui/material';
-import './assets/styles/ListingDetail.css'
+import '../../../assets/styles/ListingDetail.css'
+
 
 
 export default function ListingDetailPrice({price}) {

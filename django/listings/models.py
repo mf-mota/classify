@@ -17,6 +17,13 @@ class MainCategory(models.Model):
     class Meta:
         verbose_name_plural = "main categories"
 
+
+    def __str__(self):
+        return f'{self.id}-{self.name}'
+    
+    class Meta:
+        verbose_name_plural = "listing categories"
+
 class ListingCategory(models.Model):
     name = models.CharField(max_length=30, unique=True)
     main = models.ForeignKey(MainCategory, on_delete=models.PROTECT)
@@ -25,7 +32,7 @@ class ListingCategory(models.Model):
     
     class Meta:
         verbose_name_plural = "listing categories"
-
+        
 class ListingLocation(models.Model):
     district = models.CharField(max_length=100, null=True, blank=True)
     city = models.CharField(max_length=50)

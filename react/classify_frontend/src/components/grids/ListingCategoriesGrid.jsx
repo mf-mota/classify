@@ -1,9 +1,9 @@
-import api from '../api/apiConn'
+import api from '../../api/apiConn'
 import { useState, useEffect } from 'react'
-import CategoryCard from './CategoryCard'
+import CategoryCard from '../Listing/Categories/CategoryCard'
 import { Box } from '@mui/material'
 import { useContext } from 'react'
-import JwtAuthContent from '../context/JwtAuthContext'
+import JwtAuthContent from '../../context/JwtAuthContext'
 
 export default function ListingCategoriesGrid () {
     const {loading, tokens} = useContext(JwtAuthContent)
@@ -13,7 +13,6 @@ export default function ListingCategoriesGrid () {
             try {
                 const res = await api.get('/categories');
                 if (res && res.data) setCategories(res.data.sort((a, b) => a.id - b.id));
-                console.log(res.data)
             } catch (e) {
                 console.log("An error occurred while retrieving the categories", e);
             }

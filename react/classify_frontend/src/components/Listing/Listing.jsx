@@ -1,12 +1,12 @@
 import { useParams } from "react-router-dom"
 import Grid from '@mui/joy/Grid';
-import ListingCarousel from './components/ListingCarousel'
+import ListingCarousel from './ListingCarousel'
 import { useState, useEffect } from "react";
-import api from './api/apiConn'
-import ListingOwnerCard from "./components/ListingOwnerCard";
-import ListingDetailPrice from './ListingDetailPrice'
-import ListingDetailDesc from "./components/ListingDetailDesc";
-import ErrorPage from "./ErrorPage";
+import api from '../../api/apiConn'
+import ListingOwnerCard from "./Detail/ListingOwnerCard";
+import ListingDetailPrice from './Detail/ListingDetailPrice'
+import ListingDetailDesc from "./Detail/ListingDetailDesc";
+import ErrorPage from "../../ErrorPage";
 
 export default function Listing() {
     const {id} = useParams()

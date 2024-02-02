@@ -1,8 +1,8 @@
-import usePrivApi from '../utils/hooks/usePrivApi'
-import api from '../api/apiConn'
+import usePrivApi from '../../utils/hooks/usePrivApi'
+import api from '../../api/apiConn'
 import { useState, useEffect } from 'react'
 import { Box } from '@mui/material'
-import ListingCard from './ListingCard'
+import ListingCard from '../Listing/ListingCard'
 
 export default function CardListingsGrid ({details}) {
     const [listings, setListings] = useState([])
@@ -10,11 +10,8 @@ export default function CardListingsGrid ({details}) {
         const getListings = async () => {
             try {
                 if (!details) {
-                    console.log("Headers")
                     const res = await api.get('/listings');
-                    console.log(res)
                     if (res && res.data) setListings(res.data.results);
-                    console.log(res.data)
                 } else {
                     const query = [...details]
                     console.log(query)

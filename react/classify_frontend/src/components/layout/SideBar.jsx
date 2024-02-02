@@ -1,6 +1,6 @@
 import { Box, Icon } from "@mui/material";
 import { useState, useEffect } from "react";
-import api from '../api/apiConn'
+import api from '../../api/apiConn'
 import { Link as RouterLink } from 'react-router-dom'
 import {Link} from "@mui/material";
 export default function SideBar() {

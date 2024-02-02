@@ -11,36 +11,32 @@ class ReportedListingFlt(admin.SimpleListFilter, admin.ModelAdmin):
 
     def lookups(self, request: Any, model_admin: Any) -> list[tuple[Any, str]]:
         return ([
-            ('<=5', 'Up to 5 times'),
-            ('>5<=10', '6 to 10 times'),
-            ('10+', 'More than 10 times')
+            ('Max5', 'Up to 5 times'),
+            ('6Max10', '6 to 10 times'),
+            ('MoreThan10', 'More than 10 times')
         ])
     
     def queryset(self, request: Any, queryset: QuerySet[Any]) -> QuerySet[Any] | None:
-        if self.value() == '<5':
+        if self.value() == 'Max5':
             ids = []
             for value in queryset.values('listing').annotate(dcount=Count('listing')):
                 print("val", value['dcount'])
                 if value['dcount'] <= 5:
                     ids.append(value['listing'])
-                    return queryset.filter(listing=value['listing'])
             return queryset.filter(listing__in=ids)
-        elif self.value() == '>5<=10':
+        elif self.value() == '6Max10':
             ids = []
             for value in queryset.values('listing').annotate(dcount=Count('listing')):
                 print("val", value['dcount'])
                 if value['dcount'] > 5 and value['dcount'] <= 10:
                     ids.append(value['listing'])
-                    return queryset.filter(listing=value['listing'])
             return queryset.filter(listing__in=ids)
-        elif self.value() == '10+':
+        elif self.value() == 'MoreThan10':
             ids = []
             for value in queryset.values('listing').annotate(dcount=Count('listing')):
                 print("val", value)
                 if value['dcount'] > 10:
                     ids.append(value['listing'])
-                    return queryset.filter(listing=value['listing'])
-            print("ids", ids)
             return queryset.filter(listing__in=ids)
         return queryset
     

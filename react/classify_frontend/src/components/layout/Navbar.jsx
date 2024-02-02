@@ -10,13 +10,14 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import JwtAuthContext from '../../context/JwtAuthContext'
 import { useNavigate } from 'react-router-dom';
 import React from 'react'
 import { Link as RouterLink } from 'react-router-dom'
+import apiConn from '../../api/apiConn';
 
 
 
@@ -31,6 +32,7 @@ export default function Navbar() {
 
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const [firstName, setFirstName] = useState(" ");
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -52,6 +54,24 @@ export default function Navbar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      try {
+         if (user?.user_id) {
+          const res = await apiConn.get(`users/data/${user.user_id}/`)
+          const first_name = res.data.first_name
+          setFirstName(first_name)
+         }
+        }
+      catch (e) {
+        setFirstName(" ")
+      }
+      }
+      fetchUsername()
+    }, [user])
+
+
 
   return (
     <AppBar position="relative" sx={{
@@ -163,7 +183,7 @@ export default function Navbar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/userphoto.jpg" />
+                <Avatar alt={firstName} src="/static/images/avatar/userphoto.jpg" />
               </IconButton>
             </Tooltip>
             <Menu

@@ -1,12 +1,12 @@
 import { Grid, Box, Typography } from "@mui/material"
 import { useState, useEffect } from "react"
-import api from '../api/apiConn'
-import ListingCard from "./ListingCard"
+import api from '../../api/apiConn'
+import ListingCard from "../Listing/ListingCard"
 import { useContext } from "react"
-import JwtAuthContext from "../context/JwtAuthContext"
+import JwtAuthContext from "../../context/JwtAuthContext"
 import { Button } from "@mui/material"
 import EditIcon from '@mui/icons-material/Edit';
-import usePrivApi from '../utils/hooks/usePrivApi'
+import usePrivApi from '../../utils/hooks/usePrivApi'
 import { useNavigate } from "react-router-dom"
 
 export default function UserDashboard () {

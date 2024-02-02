@@ -1,4 +1,4 @@
-import api from '../api/apiConn'
+import api from '../../api/apiConn'
 // import { useHistory } from 'react-router-dom'
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -19,7 +19,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { FormControl } from '@mui/material';
 import SelectR from 'react-select';
-import {groupLocations} from '../utils/getGroupedLocs'
+import {groupLocations} from '../../utils/getGroupedLocs'
 import React from 'react'
 
 

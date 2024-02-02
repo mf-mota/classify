@@ -1,5 +1,5 @@
 import Avatar from '@mui/material/Avatar';
-import api from '../api/apiConn'
+import api from '../../api/apiConn'
 // import { useHistory } from 'react-router-dom'
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -14,10 +14,10 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useForm } from 'react-hook-form'
 import { v4 as uuid } from 'uuid'
-import { signUpOptions } from '../utils/validations'
+import { signUpOptions } from '../../utils/validations'
 import { useNavigate } from 'react-router-dom';
 import { useContext, useState } from 'react';
-import JwtAuthContext from '../context/JwtAuthContext'
+import JwtAuthContext from '../../context/JwtAuthContext'
 
 
 export default function SignIn() {

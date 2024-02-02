@@ -67,6 +67,7 @@ export default function Step4({props}) {
         }
 
         const createListing = async (formData) => {
+            setLoading(true);
             try {
                 const res = await api.post('/listings/', formData)
                 const listing_id = res.data.id
@@ -75,9 +76,11 @@ export default function Step4({props}) {
             catch (e) {
                 console.log("There was an error appending images to the listings. ", e)
             }
+            setLoading(false);
         }
 
         const editListing = async (formData) => {
+            setLoading(true);
             try {
                 console.log("edit...")
                 const res = await api.patch(`/listings/${defVals.id}/`, formData)
@@ -88,10 +91,12 @@ export default function Step4({props}) {
             } catch (e) {
                 console.log("Could not update listing....", e)
             }
+            setLoading(false);
+
         }
         prepareForm(formData);
+
         defVals ? editListing(formData) : createListing(formData);
-        setLoading(false);
         }
     , []);
 

@@ -1,12 +1,12 @@
 from rest_framework import generics
 from rest_framework.views import APIView
 from django_filters import rest_framework as flt
-from listings.models import Listing, ListingLocation, ListingImage, MainCategory, ListingCategory, Report
+from listings.models import Listing, ListingLocation, ListingImage, MainCategory, ListingCategory, Report, User
 from rest_framework_simplejwt.tokens import AccessToken
 from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.permissions import BasePermission, SAFE_METHODS, IsAuthenticated
-from classify_portal_api.serializers import ListingSerializerMainPage, UserListingOverview, ListingPostSerializer, ImageSerializer, ReportSerializer
+from classify_portal_api.serializers import ListingSerializerMainPage, UserListingOverview, ListingPostSerializer, ImageSerializer, ReportSerializer, UserSimpleSerializer
 from classify_portal_api.serializers import ListingSerializerDetails, LocationSerializer, MainCategorySerializer, MainCategorySerializerMain, CategorySerializer
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -30,13 +30,22 @@ environ.Env.read_env()
 
 class UpdateDeletePermission(BasePermission):
     message = "You are not the owner of this listing"
-    def has_object_permission(self, request, obj):
+    def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
             return True
         return obj.owner == request.user
+    
+class DenyAllIfNotOwner(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        print("owner vs req", obj.owner, request.user)
+        return obj.owner == request.user
 
+class AllListingsView(generics.RetrieveAPIView):
+    queryset = Listing.all_listings.all()
+    serializer_class = ListingSerializerDetails
+    permission_classes = [DenyAllIfNotOwner]
 
-class ActiveListingViewSet(viewsets.ModelViewSet, UpdateDeletePermission):
+class ActiveListingViewSet(viewsets.ModelViewSet):
     permission_classes = [UpdateDeletePermission]
     authentication_classes = []
     # filter_backends = [flt.DjangoFilterBackend]
@@ -69,13 +78,13 @@ class ActiveListingViewSet(viewsets.ModelViewSet, UpdateDeletePermission):
     def partial_update(self, request, pk):
         print("request made by: ", request.user)
         try: 
-            listing = Listing.active_listings.all().get(pk=pk)
+            listing = Listing.all_listings.all().get(pk=pk)
         except Listing.DoesNotExist:
             return Response({"detail": "Listing not found"}, status=404)
+        
         serializer = ListingPostSerializer(instance=listing, data=request.data, partial=True)
-        if not self.has_object_permission(request=request, obj=listing):
-            return Response({"detail": "You are not the owner of the listing. Permission denied"}, 
-                            status=status.HTTP_401_UNAUTHORIZED)
+
+        self.check_object_permissions(request=request, obj=listing)
         if serializer.is_valid():
             listing = serializer.save()
             data = {
@@ -135,6 +144,11 @@ class ActiveListingViewSet(viewsets.ModelViewSet, UpdateDeletePermission):
 class ReportListing(generics.CreateAPIView):
     queryset = Report.objects.all()
     serializer_class = ReportSerializer
+
+
+class SingleUserBasicView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSimpleSerializer
 
 # class ListingsList(generics.ListCreateAPIView):
 #     queryset = Listing.active_listings.all()

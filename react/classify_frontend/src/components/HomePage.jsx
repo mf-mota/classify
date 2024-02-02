@@ -1,8 +1,8 @@
 
 import Box from '@mui/system/Box';
-import '../ListingCard.css'
-import CardListingsGrid from './CardListingsGrid'
-import ListingCategoriesGrid from './ListingCategoriesGrid';
+import '../assets/styles/ListingCard.css'
+import CardListingsGrid from './grids/CardListingsGrid';
+import ListingCategoriesGrid from './grids/ListingCategoriesGrid';
 import { Typography } from '@mui/material';
 import { useContext, useEffect } from 'react';
 import JwtAuthContent from '../context/JwtAuthContext'
