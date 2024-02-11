@@ -105,12 +105,6 @@ class Command(BaseCommand):
                 cat_text_prop_2="Diesel",
                 cat_num_prop_3=2019,
                 cat_num_prop_4=75000,
-                # cat_spec_properties={
-                #     "Engine": "1995",
-                #     "Fuel": "Diesel",
-                #     "Year": 2019,
-                #     "Mileage": 75000,
-                # }
             )
             active_listing_1.save()
 
@@ -126,11 +120,6 @@ class Command(BaseCommand):
                 cat_text_prop_1="Heat Pump",
                 cat_num_prop_3=160,
                 cat_num_prop_4=4,
-                # cat_spec_properties = {
-                #     "Heating Type": "Heat Pump",
-                #     "Area": 160,
-                #     "Rooms": 4,
-                # }
             )
             active_listing_2.save()
 
@@ -146,11 +135,6 @@ class Command(BaseCommand):
                 cat_text_prop_1="None",
                 cat_num_prop_3=120,
                 cat_num_prop_4=5,
-                # cat_spec_properties = {
-                #     "Heating Type": "No heating",
-                #     "Area": 120,
-                #     "Rooms": 5,
-                # }
             )
             active_listing_3.save()
 
@@ -166,12 +150,6 @@ class Command(BaseCommand):
                 cat_text_prop_2="Diesel",
                 cat_num_prop_3=2015,
                 cat_num_prop_4=125000,
-                # cat_spec_properties={
-                #     "Engine": "1568",
-                #     "Fuel": "Petrol",
-                #     "Year": 2015,
-                #     "Mileage": 125000,
-                # }
             )
             draft_listing_1.save()
 

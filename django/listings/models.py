@@ -3,20 +3,18 @@ from django.contrib.auth.models import User
 from django.db.models.query import QuerySet #Django default user model
 from django.utils import timezone
 
+from django.db import models
 
 
 class MainCategory(models.Model):
     name = models.CharField(max_length=30, unique=True)
-    def __str__(self):
-        return self.name
     prop1_name = models.CharField(max_length=30, blank=True)
     prop2_name = models.CharField(max_length=30, blank=True)
     prop3_name = models.CharField(max_length=30, blank=True)
     prop4_name = models.CharField(max_length=30, blank=True)
-    icon = models.CharField(max_length=200, default="SETDEFAULTIMGURL.COM")
+    icon = models.CharField(max_length=200, default="https://f005.backblazeb2.com/file/cars-dealers/Template+Images/no_photo_default.jpg")
     class Meta:
         verbose_name_plural = "main categories"
-
 
     def __str__(self):
         return f'{self.id}-{self.name}'
@@ -96,8 +94,6 @@ class Listing(models.Model):
     active_listings = ActiveListings()
     draft_listings = DraftListings()
     
-    # cat_spec_properties = models.JSONField(default=dict)
-
     class Meta:
         ordering = ['-creation']
     def __str__(self):

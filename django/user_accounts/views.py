@@ -10,7 +10,8 @@ from .serializers import NewUserSerializer
 class UserViewset(viewsets.ViewSet):
     queryset = User.objects.all()
     serializer = NewUserSerializer
-
+    authentication_classes = []
+    
     def create(self, request):
         serializer = self.serializer(data=request.data)
         if serializer.is_valid():

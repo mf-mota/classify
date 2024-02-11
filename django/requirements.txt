@@ -3,6 +3,7 @@ b2sdk==1.29.0
 certifi==2023.11.17
 charset-normalizer==3.3.2
 colorama==0.4.6
+coverage==7.4.1
 Django==5.0
 django-cors-headers==4.3.1
 django-environ==0.11.2

@@ -48,7 +48,6 @@ class AllListingsView(generics.RetrieveAPIView):
 class ActiveListingViewSet(viewsets.ModelViewSet):
     permission_classes = [UpdateDeletePermission]
     authentication_classes = []
-    # filter_backends = [flt.DjangoFilterBackend]
     filterset_class = ListingFilter
     pagination_class = PageNumberPagination
     serializer_class = ListingSerializerMainPage
@@ -140,7 +139,6 @@ class ActiveListingViewSet(viewsets.ModelViewSet):
     
 
 
-
 class ReportListing(generics.CreateAPIView):
     queryset = Report.objects.all()
     serializer_class = ReportSerializer
@@ -190,8 +188,15 @@ class SubCategoriesList(generics.ListAPIView):
 class UserListingsList(generics.ListCreateAPIView):
     serializer_class = UserListingOverview
 
-    def get_queryset(self):
-        return Listing.all_listings.filter(owner=self.kwargs.get('user_id'))
+    def list(self, request, *args, **kwags):
+        if self.kwargs.get('user_id') == request.user.id:
+            serialized_data = UserListingOverview(self.get_queryset(id=self.kwargs.get('user_id')),  many=True).data
+            return Response(serialized_data, status=status.HTTP_200_OK)
+        return Response({'message': 'Access restricted to owner'}, status=status.HTTP_401_UNAUTHORIZED)
+    
+    def get_queryset(self, id):
+        return Listing.all_listings.filter(owner=id)
+
 
 class AppendImageToListing(generics.CreateAPIView):
     queryset = ListingImage.objects.all()

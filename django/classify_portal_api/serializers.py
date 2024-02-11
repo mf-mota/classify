@@ -51,7 +51,6 @@ class ListingSerializerDetails(serializers.ModelSerializer):
     location = LocationSerializer()
     owner = UserSerializer()
     category = CategorySerializer()
-    print(category)
 
     def to_representation(self, instance):
         main_cat_serializer = MainCategorySerializer(instance.category.main)
@@ -64,13 +63,6 @@ class ListingSerializerDetails(serializers.ModelSerializer):
         fields = ['id', 'name', 'description', 'category', 'price', 'owner', 'location', 'is_active', 'images', 
                   'cat_text_prop_1', 'cat_text_prop_2', 'cat_num_prop_3', 'cat_num_prop_4']
 
-    # @property
-    # def data(self):
-    #     data = super().data
-    #     specs = MainCategorySerializer(self.instance.category.main).data
-    #     spec_props = {value for key, value in specs.items() if key.startswith('prop') and value != ""}
-    #     data['spec_props'] = spec_props
-    #     return data
     
 class ListingPostSerializer(serializers.ModelSerializer):
     class Meta:

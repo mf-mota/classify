@@ -31,7 +31,7 @@ urlpatterns = [
     path("listings_all/<int:pk>", AllListingsView.as_view(), name="all_listings_get_one"),
     path('upload_listing_images/', upload_to_backblaze, name='upload_imgs'),
     path("listings/images/", AppendImageToListing.as_view(), name='append_image'),
-    path("images/<int:pk>", RemoveImageFromListing.as_view(), name='append_image'),
+    path("images/<int:pk>", RemoveImageFromListing.as_view(), name='remove_image'),
     path("report/", ReportListing.as_view(), name="listing_report"),
     path("users/data/<int:pk>/", SingleUserBasicView.as_view(), name="user_basic_info")
 ]

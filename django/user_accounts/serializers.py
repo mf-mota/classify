@@ -17,7 +17,6 @@ class NewUserSerializer(serializers.ModelSerializer):
         return value
 
     def validate_name(self, value: str, field):
-        value = super().validate(value)
         if not re.fullmatch(name_regex_pattern, value):
             raise serializers.ValidationError(f"{field} is not valid!")
         if len(value) < 2:
