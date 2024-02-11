@@ -43,24 +43,23 @@ class DenyAllIfNotOwner(BasePermission):
 class AllListingsView(generics.RetrieveAPIView):
     queryset = Listing.all_listings.all()
     serializer_class = ListingSerializerDetails
-    permission_classes = [DenyAllIfNotOwner]
+    permission_classes = [UpdateDeletePermission,]
 
 class ActiveListingViewSet(viewsets.ModelViewSet):
-    permission_classes = [UpdateDeletePermission]
+    permission_classes = [UpdateDeletePermission,]
     authentication_classes = []
+    permission_classes = []
     filterset_class = ListingFilter
     pagination_class = PageNumberPagination
     serializer_class = ListingSerializerMainPage
     queryset = Listing.active_listings.all()
 
     def list(self, request):
-        print(request.user)
         filter_backends = flt.DjangoFilterBackend()
         queryset = Listing.active_listings.all()
         flt_queryset = filter_backends.filter_queryset(request, queryset, self)
         paginator = SearchPagination()
         result_page = paginator.paginate_queryset(flt_queryset, request)
-        print("here ", flt_queryset.query)
         serializer = ListingSerializerMainPage(result_page, many=True)
         return paginator.get_paginated_response(serializer.data)
 
@@ -90,24 +89,23 @@ class ActiveListingViewSet(viewsets.ModelViewSet):
                 'id': listing.id,
                 'message': 'Updated Successfully'
             }
-            return Response(data, status=status.HTTP_201_CREATED)
+            return Response(data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk):
         print(request.user.username)
         if not request.user.is_authenticated:
-            return Response({"detail": "Authentication required"}, status=401)
-        queryset = Listing.all_listings.all()
+            return Response({"detail": "Authentication required"}, status=status.HTTP_401_UNAUTHORIZED)
         try:
-            listing = queryset.get(pk=pk)
-            print(listing.owner)
+            listing = Listing.all_listings.all().get(pk=pk)
+            print("listing owner: ", listing.owner.id, " req user: ", request.user.id)
         except Listing.DoesNotExist:
             return Response({"detail": "Listing not found"}, status=404)
         else:
-            if self.has_object_permission(request=request, obj=listing):
+            if request.user.id == listing.owner_id:
                 listing.delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+            return Response(status=status.HTTP_403_FORBIDDEN)
     
     def create(self, request):
         print("req data", request)
@@ -137,16 +135,19 @@ class ActiveListingViewSet(viewsets.ModelViewSet):
             return [JWTAuthentication()]
         return []
     
+    
 
 
 class ReportListing(generics.CreateAPIView):
     queryset = Report.objects.all()
     serializer_class = ReportSerializer
-
+    permission_classes = []
 
 class SingleUserBasicView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSimpleSerializer
+    permission_classes = []
+    authentication_classes = []
 
 # class ListingsList(generics.ListCreateAPIView):
 #     queryset = Listing.active_listings.all()
@@ -165,6 +166,7 @@ class MainCategoriesList(generics.ListAPIView):
     queryset = MainCategory.objects.all()
     serializer_class = MainCategorySerializerMain
     authentication_classes = []
+    permission_classes = []
 
 class MainCategoriesDetailList(generics.ListAPIView):
     queryset = MainCategory.objects.all()
@@ -172,11 +174,15 @@ class MainCategoriesDetailList(generics.ListAPIView):
     filter_backends = (flt.DjangoFilterBackend,)
     filterset_class = MainCategoryFilter
     authentication_classes = []
+    permission_classes = []
+
 
 class LocationsList(generics.ListAPIView):
     queryset = ListingLocation.locations.all()
     serializer_class = LocationSerializer
     authentication_classes = []
+    permission_classes = []
+
 
 class SubCategoriesList(generics.ListAPIView):
     queryset = ListingCategory.objects.all()
@@ -184,6 +190,8 @@ class SubCategoriesList(generics.ListAPIView):
     filter_backends = (flt.DjangoFilterBackend,)
     filterset_class = CategoryFilter
     authentication_classes = []
+    permission_classes = []
+
 
 class UserListingsList(generics.ListCreateAPIView):
     serializer_class = UserListingOverview
@@ -201,6 +209,7 @@ class UserListingsList(generics.ListCreateAPIView):
 class AppendImageToListing(generics.CreateAPIView):
     queryset = ListingImage.objects.all()
     serializer_class = ImageSerializer
+    permission_classes = []
 
     # override the create method to append multiple images in a single HTTP Post request
     def create(self, request, *args, **kwags):
@@ -219,6 +228,8 @@ class AppendImageToListing(generics.CreateAPIView):
 class RemoveImageFromListing(generics.DestroyAPIView):
     queryset = ListingImage.objects.all()
     serializer_class = ImageSerializer
+    permission_classes = []
+
 
     def destroy(self, request, pk):
         if not request.user.is_authenticated:

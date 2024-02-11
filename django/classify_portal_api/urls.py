@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 # from .views import ListingsList, ListingShow
 from .views import LocationsList, UserListingsList, MainCategoriesList, MainCategoriesDetailList, SubCategoriesList
 from .views import upload_to_backblaze, ReportListing, AppendImageToListing, RemoveImageFromListing, AllListingsView
@@ -19,6 +19,9 @@ app_name = "classify_portal_api"
 #     path("users/<int:user_id>/", UserListingsList.as_view(), name="users_listings")
 # ]
 
+router = DefaultRouter()
+router.register("listings", ActiveListingViewSet, basename='active_listings')
+
 urlpatterns = [
     path("users/<int:user_id>/", UserListingsList.as_view(), name="users_listings"),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -33,10 +36,6 @@ urlpatterns = [
     path("listings/images/", AppendImageToListing.as_view(), name='append_image'),
     path("images/<int:pk>", RemoveImageFromListing.as_view(), name='remove_image'),
     path("report/", ReportListing.as_view(), name="listing_report"),
-    path("users/data/<int:pk>/", SingleUserBasicView.as_view(), name="user_basic_info")
+    path("users/data/<int:pk>/", SingleUserBasicView.as_view(), name="user_basic_info"),
+    path("", include(router.urls))
 ]
-
-router = DefaultRouter()
-router.register("listings", ActiveListingViewSet, basename='active_listings')
-
-[urlpatterns.append(url) for url in router.urls]
