@@ -43,7 +43,20 @@ class DenyAllIfNotOwner(BasePermission):
 class AllListingsView(generics.RetrieveAPIView):
     queryset = Listing.all_listings.all()
     serializer_class = ListingSerializerDetails
-    permission_classes = [UpdateDeletePermission,]
+    
+    def retrieve(self, request, *args, **kwargs):
+        print(request.user.id)
+        if request.user == "AnonymousUser":
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        try:
+            listing = Listing.all_listings.all().get(pk=self.kwargs.get('pk'))
+        except Listing.DoesNotExist:
+            return Response({'message': 'Listing does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        if request.user.id == listing.owner_id:
+            serialized_data = self.serializer_class(listing).data
+            return Response(serialized_data, status=status.HTTP_200_OK)
+        return Response({'message': 'Access restricted to owner'}, status=status.HTTP_403_FORBIDDEN)
+
 
 class ActiveListingViewSet(viewsets.ModelViewSet):
     permission_classes = [UpdateDeletePermission,]
