@@ -50,7 +50,6 @@ export default function ListingFormPage ({mode}) {
   return defVals || mode == "new" ?
    (
     <>
-      Curr step: {step+1}
       {console.log(listing)}
       {step === 0 ? <Step0 props={{...groupedPropsComplete}}/> : null}
       {step === 1 ? <Step1 props={{setStep, setListing, listing, defVals, loading}}/> : null }

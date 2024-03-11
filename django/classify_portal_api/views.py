@@ -154,6 +154,7 @@ class ActiveListingViewSet(viewsets.ModelViewSet):
 class ReportListing(generics.CreateAPIView):
     queryset = Report.objects.all()
     serializer_class = ReportSerializer
+    authentication_classes = []
     permission_classes = []
 
 class SingleUserBasicView(generics.RetrieveAPIView):

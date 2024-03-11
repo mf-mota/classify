@@ -60,7 +60,7 @@ export default function SearchBar({props}) {
     setPage(1)
   }
   return (
-          <Search>
+          <Search data-testid="search-bar-component">
             <SearchIconWrapper>
               <SearchIcon sx={{color: "#232D3F"}}/>
             </SearchIconWrapper>
